@@ -1,0 +1,72 @@
+---
+title: "Inference in Bartik Designs"
+author: "Michal Kolesár"
+date: "`r Sys.Date()`"
+
+bibliography: bartik_library.bib
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Inference in Bartik Designs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE, cache=FALSE}
+library("knitr")
+knitr::opts_knit$set(self.contained = FALSE)
+knitr::opts_chunk$set(tidy = TRUE, collapse=TRUE, comment = "#>",
+                      tidy.opts=list(blank=FALSE, width.cutoff=55))
+```
+
+The package `BartikSE` implements confidence intervals proposed by @akm18 for
+Bartik-style regressions. In other words the regressor of interest has a
+structure as in @bartik91.
+
+We illustrate the use of the package with a dataset from @adh13.
+
+```{r}
+library("BartikSE")
+## There are three datasets in this package: AKM, AKM_Xs and AKM_W
+Xs <- ADH_Xs
+W <- ADH_W
+ADH$X <- W %*% Xs
+
+cor(ADH$X, ADH$IV)
+ggplot2::qplot(ADH$X, ADH$IV-ADH$X)
+
+
+ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
+          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
+          division"
+
+r1 <- lm(as.formula(paste("shock ~ IV+", ctrls)), data=ADH)
+lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH)
+
+Z <- model.matrix(r1)
+
+```
+
+# Unweighted regressions
+
+
+The package also implements lower-bound estimates for the smoothness constant
+$M$ for the Taylor and Hölder smoothess class, as described in the supplements to
+
+```{r}
+## Add variance estimate to the lee data so that the RDSmoothnessBound
+## function doesn't have to compute them each time
+##dl <- RDHonest::RDPrelimVar(dl, se.initial="NN")
+
+### Only use three point-average for averages of a 100 points closest to cutoff,
+### and report results separately for points above and below cutoff
+##RDSmoothnessBound(dl, s=100, separate=TRUE, multiple=FALSE, sclass="T")
+
+### Pool estimates based on observations below and above cutoff, and
+### use three-point averages over the entire support of the running variable
+##RDSmoothnessBound(dl, s=100, separate=FALSE, multiple=TRUE, sclass="H")
+```
+
+# References
