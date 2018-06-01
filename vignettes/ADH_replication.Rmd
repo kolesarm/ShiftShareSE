@@ -60,35 +60,41 @@ ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
           l_sh_empl_f + l_sh_routine33 + l_task_outsource + division"
 ## First stage
 b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                data=ADH, weights=weights, region_cvar=statefip,
-                method="all")
+                data=ADH, weights=weights, region_cvar=statefip, method="all")
 b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                data=ADH, method="all",
-                region_cvar=statefip)
+                data=ADH, method="all", region_cvar=statefip)
 ## Reduced form
- b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
-                Xs=ADH_Xs, data=ADH, region_cvar=statefip,
-                weights=weights,
-                method="all")
- b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
-                Xs=ADH_Xs, data=ADH, region_cvar=statefip,
-                method="all")
+b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
+               Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+               weights=weights,
+               method="all")
+b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
+               Xs=ADH_Xs, data=ADH, region_cvar=statefip, method="all")
 
+## IV
+b5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")), W=ADH_W,
+                Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                weights=weights, method="all")
+b6 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")), W=ADH_W,
+                Xs=ADH_Xs, data=ADH, region_cvar=statefip, method="all")
 ```
 
-First stage and reduced form for weighted regressions:
+IV, first stage and reduced form for weighted regressions:
 ```{r}
-b3
-b1
+b5 ## IV
+b3 ## Reduced form
+b1 ## First stage
 ```
 
-This replicates exactly Rodrigo's results.
+This replicates exactly Rodrigo's results. TODO: We don't replicate AKM0, only
+p-values, and IV exactly due to probably finite-sample correection.
 
 
 First stage and reduced form for unweighted regressions:
 ```{r}
-b4
-b2
+b6 ## IV
+b4 ## Reduced form
+b2 ## First stage
 ```
 
 Notice that the first-stage error is way smaller for AKM. This must be a

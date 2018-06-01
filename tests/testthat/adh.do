@@ -20,3 +20,13 @@ qui: eststo: regress d_sh_empl_mfg X `ctrls' [aw=weights]
 qui: eststo: regress d_sh_empl_mfg X `ctrls' [aw=weights], robust
 qui: eststo: regress d_sh_empl_mfg X `ctrls' [aw=weights], cluster(statefip)
 esttab,  b(%11.0g) se(%11.0g)
+
+eststo clear
+qui: eststo: ivregress 2sls d_sh_empl_mfg (shock=X) `ctrls'
+qui: eststo: ivregress 2sls d_sh_empl_mfg (shock=X) `ctrls', robust
+qui: eststo: ivregress 2sls d_sh_empl_mfg (shock=X) `ctrls', cluster(statefip)
+
+qui: eststo: ivregress 2sls d_sh_empl_mfg (shock=X) `ctrls' [aw=weights]
+qui: eststo: ivregress 2sls d_sh_empl_mfg (shock=X) `ctrls' [aw=weights], robust
+qui: eststo: ivregress 2sls d_sh_empl_mfg (shock=X) `ctrls' [aw=weights], cluster(statefip)
+esttab,  b(%11.0g) se(%11.0g)
