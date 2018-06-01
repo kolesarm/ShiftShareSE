@@ -22,51 +22,76 @@ knitr::opts_chunk$set(tidy = TRUE, collapse=TRUE, comment = "#>",
 ```
 
 The package `BartikSE` implements confidence intervals proposed by @akm18 for
-Bartik-style regressions. In other words the regressor of interest has a
-structure as in @bartik91.
+@bartik91 style regressions. In the future, this file will illustrate the use of
+this package. For now, we will just try to replicate Rodrigo's results for our
+[@adh13, ADH hereafter] application.
 
-We illustrate the use of the package with a dataset from @adh13.
+The package contains the following data: a data frame `ADH` that contains the
+outcome and control variables, `ADH_Xs` that is a vector of sectoral shocks that
+we reconstructed, and `ADH_W`, the matrix of sectoral weights.
 
+The correlation with the IV in ADH is quite high:
 ```{r}
 library("BartikSE")
-## There are three datasets in this package: AKM, AKM_Xs and AKM_W
-Xs <- ADH_Xs
-W <- ADH_W
-ADH$X <- W %*% Xs
+## Aggregate sectoral shocks
+ADH$X <- ADH_W %*% ADH_Xs
 
 cor(ADH$X, ADH$IV)
-ggplot2::qplot(ADH$X, ADH$IV-ADH$X)
-
-
-ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
-          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
-          division"
-
-r1 <- lm(as.formula(paste("shock ~ IV+", ctrls)), data=ADH)
-lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH)
-
-Z <- model.matrix(r1)
-
 ```
 
-# Unweighted regressions
+Strangely, there is almost a deterministic relationship between `IV` and `X`:
+
+```{r fig.width=4.5, fig.height=3.5, fig.cap="ADH IV variable reconstruction"}
+## See Figure 1 below for output
+ggplot2::qplot(ADH$X, ADH$IV)+ggplot2::geom_abline(slope=1, intercept=0)+ggplot2::theme_bw()+
+    ggplot2::labs(x="Our reconstruction", y="IV variable in ADH")
+```
 
 
-The package also implements lower-bound estimates for the smoothness constant
-$M$ for the Taylor and Hölder smoothess class, as described in the supplements to
+
+# Regressions
+
+We now run the first-stage and reduced-form regressions and compute various
+standard errors (I haven't coded up AKM0 yet):
 
 ```{r}
-## Add variance estimate to the lee data so that the RDSmoothnessBound
-## function doesn't have to compute them each time
-##dl <- RDHonest::RDPrelimVar(dl, se.initial="NN")
+## definte vector of controls
+ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
+          l_sh_empl_f + l_sh_routine33 + l_task_outsource + division"
+## First stage
+b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
+                data=ADH, weights=weights, region_cvar=statefip,
+                method="all")
+b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
+                data=ADH, method="all",
+                region_cvar=statefip)
+## Reduced form
+ b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
+                Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                weights=weights,
+                method="all")
+ b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
+                Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                method="all")
 
-### Only use three point-average for averages of a 100 points closest to cutoff,
-### and report results separately for points above and below cutoff
-##RDSmoothnessBound(dl, s=100, separate=TRUE, multiple=FALSE, sclass="T")
-
-### Pool estimates based on observations below and above cutoff, and
-### use three-point averages over the entire support of the running variable
-##RDSmoothnessBound(dl, s=100, separate=FALSE, multiple=TRUE, sclass="H")
 ```
+
+First stage and reduced form for weighted regressions:
+```{r}
+b3
+b1
+```
+
+This replicates exactly Rodrigo's results.
+
+
+First stage and reduced form for unweighted regressions:
+```{r}
+b4
+b2
+```
+
+Notice that the first-stage error is way smaller for AKM. This must be a
+consequence of the fact that we're essentially running a sectoral regression.
 
 # References
