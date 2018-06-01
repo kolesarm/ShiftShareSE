@@ -14,7 +14,8 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     ## First stage
     r1 <- lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH, weights=weights)
     b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                   data=ADH, weights=weights, region_cvar=statefip, method="all")
+                   data=ADH, weights=weights, region_cvar=statefip,
+                   method="all")
     r2 <- lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH)
     b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
                    data=ADH, method="all", region_cvar=statefip)

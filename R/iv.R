@@ -135,7 +135,7 @@ ivBartik.fit <- function(y1, y2, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
     cv <- stats::qnorm(1-alpha/2)
 
     if ("akm0" %in% method) {
-        hR <- drop(crossprod(wgt* (ddY1-ddY2*beta0), W))
+        hR <- drop(crossprod(wgt * (ddY1-ddY2*beta0), W))
         se.akm0 <- sqrt(sum(hX^2*hR^2) / RX^2)
 
         ## Now build CI
