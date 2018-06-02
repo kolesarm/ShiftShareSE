@@ -52,7 +52,7 @@ ggplot2::qplot(ADH$X, ADH$IV)+ggplot2::geom_abline(slope=1, intercept=0)+ggplot2
 # Regressions
 
 We now run the first-stage and reduced-form regressions and compute various
-standard errors (I haven't coded up AKM0 yet):
+standard errors (I haven't coded up clustering of sectors yet):
 
 ```{r}
 ## definte vector of controls
@@ -86,8 +86,20 @@ b3 ## Reduced form
 b1 ## First stage
 ```
 
-This replicates exactly Rodrigo's results. TODO: We don't replicate AKM0, only
-p-values, and IV exactly due to probably finite-sample correection.
+This replicates exactly Rodrigo's results:
+
+1. RF and FS standard errors match exactly for EHW, regional clustering, and
+   AKM. For AKM0, I match up to first two significant digits, likely because I
+   compute the CI exactly, while Rodrigo does it numerically
+2. IV standard errors for AKM match exactly. EHW and cluster don't exactly
+   match, probably because I don't use finite-sample corrections, in order to
+   match stata, which doesn't use them in IV---see [https://stats.stackexchange.com/questions/329851/default-variance-estimators-in-stata-for-ivregress](https://stats.stackexchange.com/questions/329851/default-variance-estimators-in-stata-for-ivregress).
+   For AKM0 I again don't match it exactly (apart from matching the p-value),
+   probably due to the numerical inversion issue.
+3. The IV standard errors for AKM and AKM0 are still a bit larger than
+   EHW/cluster (the "standard error" for AKM0 is just the CI length divided by
+   $2z_{0.975}$)
+
 
 
 First stage and reduced form for unweighted regressions:
@@ -99,5 +111,6 @@ b2 ## First stage
 
 Notice that the first-stage error is way smaller for AKM. This must be a
 consequence of the fact that we're essentially running a sectoral regression.
+Nonetheless, the IV standard error for AKM0 is substantially bigger.
 
 # References

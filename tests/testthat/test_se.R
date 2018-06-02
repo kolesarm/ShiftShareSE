@@ -69,6 +69,62 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
                    .097547805, .09957397),
                  unname(c(b6$se[1:3], b5$se[1:3])))
 
-
-
+    ## RF and IV p-values need to match under the null
+    expect_equal(b3$p["AKM0"], b5$p["AKM0"])
+    expect_equal(b4$p["AKM0"], b6$p["AKM0"])
 })
+
+test_that("AKM and AKM0 standard errors on ADH data", {
+
+    ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
+          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
+          division"
+
+    ## First stage
+    b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
+                   data=ADH, weights=weights, region_cvar=statefip,
+                   method="all")
+    ## Reduced form
+    b3 <- lmBartik(as.formula(paste("d_sh_empl ~ ", ctrls)), W=ADH_W,
+                   Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                   weights=weights, method="all")
+    ## IV
+    b5 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+                   W=ADH_W, Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                   weights=weights, method="all")
+
+    ## From rodrigo
+
+    ## p-values:
+    expect_equal(unname(b1$p[-1]),
+                 c(0.000000000000435207425653061, 0.00000000000852184989241778,
+                   0, 0.0000821954647416412))
+    ## CIs: FS, IV and RF
+
+    ## RF
+    expect_equal(unname(c(b3$ci.l[-c(1, 5)], round(b3$ci.l[5], 2))),
+                 c(-0.967346848113025, -0.868235840622573,
+                   -1.07651432083069, -1.45))
+    expect_equal(unname(c(b3$ci.r[-c(1, 5)], round(b3$ci.r[5], 2))),
+                 c(-0.345460968982221, -0.444571976472673,
+                   -0.236293496264559, -0.32))
+    ## FS
+    expect_equal(unname(c(b1$ci.l[-c(1, 5)], round(b1$ci.l[5], 2))),
+                 c(0.634697101293926, 0.620404032001181,
+                   0.68165700538552, 0.71))
+    expect_equal(unname(c(b1$ci.r[-c(1, 5)], round(b1$ci.r[5], 2))),
+                 c(1.10553146809938, 1.11982453739213,
+                   1.05857156400779, 1.21))
+    ## IV
+    expect_equal(unname(c(b5$ci.r[4], round(b5$ci.r[-c(1, 4)], 2))),
+                 c(-0.335051871169529, -0.42, -0.40, -0.39))
+    expect_equal(unname(c(b5$ci.l[4], round(b5$ci.l[-c(1, 4)], 2))),
+                 c(-1.17372443578747, -1.09, -1.11, -1.40))
+
+    ## RF and IV p-values need to match under the null
+    expect_equal(b3$p["AKM0"], b5$p["AKM0"])
+})
+
+## We match:
+
+## TODO: match IV, and match AKM0 CIs to more than 2 digits
