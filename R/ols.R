@@ -34,7 +34,6 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method,
 }
 
 
-
 #' Inference in a regression with Bartik structure
 #'
 #' Basic computing engine to calculate, confidence intervals, and p-values in
@@ -152,19 +151,18 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
 }
 
 
-
 #' @export
 print.BartikResults <- function(x, digits = getOption("digits"), ...) {
 
     fmt <- function(x) format(x, digits=digits, width=digits+1)
 
     cat("Estimate:", fmt(x$beta))
+    s <- !is.na(x$se)
 
-    r <- cbind("Std. Error"=x$se, "p-value"=x$p, "Lower CI"=x$ci.l,
-               "Upper CI"=x$ci.r)
+    r <- cbind("Std. Error"=x$se[s], "p-value"=x$p[s], "Lower CI"=x$ci.l[s],
+               "Upper CI"=x$ci.r[s])
     cat("\n\nInference:\n")
     print(r, digits=digits)
 
     invisible(x)
-
 }

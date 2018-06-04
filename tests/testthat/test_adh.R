@@ -54,7 +54,4 @@ test_that("Point estimates match Table 3", {
                        weights=weights, data=ADH)
     expect_equal(ur(iv2w$coefficients[2]), -.5963601)
     expect_equal(ur(fs2w$coefficients[2]), .6310409)
-
-    ## TODO: Standard errors/CIs match
-
 })

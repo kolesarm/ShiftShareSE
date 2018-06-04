@@ -9,7 +9,6 @@ ctrls <- readxl::read_excel("DataADH_check.xlsx", sheet=2)
 ## ADH_Xs <- readxl::read_excel("DataADH_check.xlsx", sheet=4,
 ##                              col_names=FALSE)$X__1
 ADH_Xs <- readxl::read_excel("DataADH_check.xlsx", sheet=4)$OTH
-## ADH_y1 <- readxl::read_excel("DataADH_check.xlsx", sheet=4)$USA
 ADH_W <- unname(as.matrix(readxl::read_excel("DataADH_check.xlsx",
                                          sheet=3, col_names=FALSE)))
 ADH <- cbind(d, ctrls)
