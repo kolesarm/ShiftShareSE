@@ -6,7 +6,7 @@
 \title{Sector shock variable from Autor, Dorn and Hanson (2013)}
 \format{A vector of length 775}
 \source{
-TODO
+David Dorn's website \url{http://ddorn.net/data.htm}
 }
 \usage{
 ADH_Xs

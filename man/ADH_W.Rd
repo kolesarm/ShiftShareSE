@@ -6,7 +6,7 @@
 \title{Weight matrix variable from Autor, Dorn and Hanson (2013)}
 \format{A matrix with dimensions 1,444 x 775}
 \source{
-TODO
+David Dorn's website \url{http://ddorn.net/data.htm}
 }
 \usage{
 ADH_W

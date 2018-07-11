@@ -5,7 +5,7 @@
 \title{Inference in a regression with Bartik structure}
 \usage{
 ivBartik.fit(y1, y2, Xs, W, Z, w = NULL, method = c("akm", "akm0"),
-  beta0 = 0, alpha = 0.05, region_cvar = NULL)
+  beta0 = 0, alpha = 0.05, region_cvar = NULL, residual_sector = FALSE)
 }
 \arguments{
 \item{y1}{Outcome variable, vector of length \code{N}}
@@ -44,9 +44,11 @@ process. If not \code{NULL}, weighted least squares is used with weights
 \item{alpha}{Significance level (confidence intervals will have coverage
 \code{1-alpha})}
 
-\item{region_cvar}{A vector of cluster variables, for method \code{cluster_region}.
-If the vector \code{1:N} is used, clustering is effectively equivalent to
-\code{ehw}}
+\item{region_cvar}{A vector of cluster variables, for method
+\code{cluster_region}. If the vector \code{1:N} is used, clustering is
+effectively equivalent to \code{ehw}}
+
+\item{residual_sector}{create a dummy residual sector so weights sum to one.}
 }
 \description{
 Basic computing engine to calculate, confidence intervals, and p-values in

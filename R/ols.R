@@ -4,8 +4,8 @@
 #' @template shocks
 #' @inheritParams lmBartik.fit
 #' @export
-lmBartik <- function(formula, data, subset, weights, Xs, W, method,
-                     beta0=0, alpha=0.05, region_cvar=NULL) {
+lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
+                     alpha=0.05, region_cvar=NULL, residual_sector=FALSE) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
@@ -26,7 +26,8 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method,
     Z <- if (stats::is.empty.model(mt)) NULL
          else stats::model.matrix(mt, mf, contrasts=NULL)
 
-    ret <- lmBartik.fit(y, Xs, W, Z, w, method, beta0, alpha, rc)
+    ret <- lmBartik.fit(y, Xs, W, Z, w, method, beta0, alpha, rc,
+                        residual_sector)
 
     ret$call <- cl
     ret$terms <- mt
@@ -63,12 +64,18 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @param beta0 null that is tested (for p-values)
-#' @param region_cvar A vector of cluster variables, for method \code{cluster_region}.
-#'     If the vector \code{1:N} is used, clustering is effectively equivalent to
-#'     \code{ehw}
+#' @param region_cvar A vector of cluster variables, for method
+#'     \code{cluster_region}. If the vector \code{1:N} is used, clustering is
+#'     effectively equivalent to \code{ehw}
+#' @param residual_sector create a dummy residual sector so weights sum to one.
 #' @export
 lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
-                         beta0=0, alpha=0.05, region_cvar=NULL) {
+                         beta0=0, alpha=0.05, region_cvar=NULL,
+                         residual_sector=FALSE) {
+    if (residual_sector) {
+        W <- cbind(W, 1-rowSums(W))
+        Xs <- c(Xs, 0)
+    }
 
     X <- drop(W %*% Xs)
     mm <- cbind(X, Z)
@@ -87,7 +94,7 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
-        ddY <- stats::lm.fit(y=y, x=Z)$residuals # \ddot{Y}_{1}
+        ddY <- stats::lm.fit(y=y, x=Z)$residuals # \ddot{Y}
         hX <- stats::lm.fit(y=ddX, x=W)$coefficients #  \hat{\Xs}
     } else {
         ddX <- stats::lm.wfit(y=X, x=Z, w=w)$residuals
@@ -111,6 +118,9 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
         se.s <- sqrt((nc/(nc-1)) * (n-1)/(n-p) *
                      drop(crossprod(tapply(u, factor(region_cvar), sum)))) / RX
     }
+
+    if (residual_sector)
+        hX[length(hX)] <- 0
 
     if ("akm" %in% method) {
         hR <- drop(crossprod(wgt * r$residuals, W))

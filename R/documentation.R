@@ -22,7 +22,7 @@
 #' \item{l_task_outsource}{}
 #' \item{division}{US Census division of CZ}
 #' }
-#' @source TODO
+#' @source David Dorn's website \url{http://ddorn.net/data.htm}
 #' @references{
 #'
 #' \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:
@@ -35,7 +35,7 @@
 #' Sector shock variable from Autor, Dorn and Hanson (2013)
 #'
 #' @format A vector of length 775
-#' @source TODO
+#' @source David Dorn's website \url{http://ddorn.net/data.htm}
 #' @references{
 #'
 #' \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:
@@ -48,7 +48,7 @@
 #' Weight matrix variable from Autor, Dorn and Hanson (2013)
 #'
 #' @format A matrix with dimensions 1,444 x 775
-#' @source TODO
+#' @source David Dorn's website \url{http://ddorn.net/data.htm}
 #' @references{
 #'
 #' \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:
