@@ -112,7 +112,6 @@ ivBartik.fit <- function(y1, y2, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
         hX <- stats::lm.wfit(y=ddX, x=W, w=w)$coefficients
     }
     wgt <- if (!is.null(w)) w else 1
-    RY <- sum(wgt * ddY1*ddX)
     RX <- sum(wgt * ddY2*ddX)
 
     if("all" %in% method)
@@ -133,33 +132,41 @@ ivBartik.fit <- function(y1, y2, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
         se.s <- sqrt(drop(crossprod(tapply(u, factor(region_cvar), sum))) /
                      RX^2)
 
-    if (residual_sector)
-        hX[length(hX)] <- 0
-
-    if ("akm" %in% method) {
+    if ("akm" %in% method | "akm0" %in% method) {
+        if (residual_sector)
+            hX[length(hX)] <- 0
         hR <- drop(crossprod(wgt * resid, W))
-        se.akm <- sqrt(sum(hX^2*hR^2) / RX^2)
+        hXhR <- sum(hX^2*hR^2)
     }
+
+    if ("akm" %in% method)
+        se.akm <- sqrt(hXhR / RX^2)
 
     cil.akm0 <- cir.akm0 <- NA
     cv <- stats::qnorm(1-alpha/2)
 
     if ("akm0" %in% method) {
-        hR <- drop(crossprod(wgt * (ddY1-ddY2*beta0), W))
-        se.akm0 <- sqrt(sum(hX^2*hR^2) / RX^2)
+        hR0 <- drop(crossprod(wgt * (ddY1-ddY2*beta0), W))
+        se.akm0 <- sqrt(sum(hX^2*hR0^2) / RX^2)
 
         ## Now build CI
-        wy <- drop(crossprod(wgt * ddY1, W))
         wx <- drop(crossprod(wgt * ddY2, W))
-        SXY <- sum(hX^2*wy*wx)
-        SXX <- sum(hX^2*wx^2)
-        SYY <- sum(hX^2*wy^2)
+        Q <- RX^2/cv^2 - sum(hX^2*wx^2)
+        Q2 <- sum(hX^2*hR*wx)
+        mid <- betahat -  Q2 / Q
+        dis <- (Q2/Q)^2 + hXhR / Q
 
-        mid <- (RY*RX-cv^2*SXY)/(RX^2-cv^2*SXX)
-        hl <- sqrt( (RY*RX-cv^2*SXY)^2-(RX^2-cv^2*SXX)*(RY^2-cv^2*SYY)) /
-            (RX^2-cv^2*SXX)
-        cir.akm0 <- mid+hl
-        cil.akm0 <- mid-hl
+
+        if (Q>0) {
+            cir.akm0 <- mid + sqrt(dis)
+            cil.akm0 <- mid - sqrt(dis)
+        } else if (dis >0)  {
+            cir.akm0 <- mid - sqrt(dis)
+            cil.akm0 <- mid + sqrt(dis)
+        } else  {
+            cir.akm0 <- Inf
+            cil.akm0 <- -Inf
+        }
     }
 
     se <- c(se.h, se.r, se.s, se.akm)

@@ -101,7 +101,6 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
         ddY <- stats::lm.wfit(y=y, x=Z, w=w)$residuals
         hX <- stats::lm.wfit(y=ddX, x=W, w=w)$coefficients
     }
-    RY <- sum(wgt * ddY*ddX)
     RX <- sum(wgt * ddX^2)
 
     if("homosk" %in% method) {
@@ -119,33 +118,40 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
                      drop(crossprod(tapply(u, factor(region_cvar), sum)))) / RX
     }
 
-    if (residual_sector)
-        hX[length(hX)] <- 0
-
-    if ("akm" %in% method) {
+    if ("akm" %in% method | "akm0" %in% method) {
+        if (residual_sector)
+            hX[length(hX)] <- 0
         hR <- drop(crossprod(wgt * r$residuals, W))
-        se.akm <- sqrt(sum(hX^2*hR^2)) / RX
+        hXhR <- sum(hX^2*hR^2)
     }
+
+    if ("akm" %in% method)
+        se.akm <- sqrt(hXhR) / RX
 
     cil.akm0 <- cir.akm0 <- NA
     cv <- stats::qnorm(1-alpha/2)
 
     if ("akm0" %in% method) {
-        hR <- drop(crossprod(wgt * (ddY-ddX*beta0), W))
-        se.akm0 <- sqrt(sum(hX^2*hR^2)) / RX
+        hR0 <- drop(crossprod(wgt * (ddY-ddX*beta0), W))
+        se.akm0 <- sqrt(sum(hX^2*hR0^2)) / RX
 
         ## Now build CI
-        wy <- drop(crossprod(wgt * ddY, W))
         wx <- drop(crossprod(wgt * ddX, W))
-        SXY <- sum(hX^2*wy*wx)
-        SXX <- sum(hX^2*wx^2)
-        SYY <- sum(hX^2*wy^2)
+        Q <- RX^2/cv^2 - sum(hX^2*wx^2)
+        Q2 <- sum(hX^2*hR*wx)
+        mid <- betahat -  Q2 / Q
+        dis <- (Q2/Q)^2 + hXhR / Q
 
-        mid <- (RY*RX-cv^2*SXY)/(RX^2-cv^2*SXX)
-        hl <- sqrt( (RY*RX-cv^2*SXY)^2-(RX^2-cv^2*SXX)*(RY^2-cv^2*SYY)) /
-            (RX^2-cv^2*SXX)
-        cir.akm0 <- mid+hl
-        cil.akm0 <- mid-hl
+        if (Q>0) {
+            cir.akm0 <- mid + sqrt(dis)
+            cil.akm0 <- mid - sqrt(dis)
+        } else if (dis >0)  {
+            cir.akm0 <- mid - sqrt(dis)
+            cil.akm0 <- mid + sqrt(dis)
+        } else  {
+            cir.akm0 <- Inf
+            cil.akm0 <- -Inf
+        }
     }
 
     se <- c(se.h, se.r, se.s, se.akm)
