@@ -86,7 +86,7 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
 
     if("all" %in% method)
-        method <- c("homosk", "robust", "region_cluster", "akm", "akm0")
+        method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
 
     W0 <- if (residual_sector) cbind(W, 1-rowSums(W)) else W
 
@@ -111,8 +111,8 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     }
 
     u <- wgt * r$residuals * ddX
-    if("robust" %in% method)
-        se.r <- sqrt((n / (n - r$rank)) * drop(crossprod(u))) / RX
+    if("ehw" %in% method)
+        se.r <- sqrt((n / (n - p)) * drop(crossprod(u))) / RX
 
     if("region_cluster" %in% method) {
         nc <- length(unique(region_cvar))      # # of clusters

@@ -118,7 +118,7 @@ ivBartik.fit <- function(y1, y2, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
     RX <- sum(wgt * ddY2*ddX)
 
     if("all" %in% method)
-        method <- c("homosk", "robust", "region_cluster", "akm", "akm0")
+        method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
 
     if("homosk" %in% method) {
         rss <- sum(wgt * resid^2)
@@ -128,7 +128,7 @@ ivBartik.fit <- function(y1, y2, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
     }
 
     u <- wgt * resid * ddX
-    if("robust" %in% method)
+    if("ehw" %in% method)
         se.r <- sqrt(drop(crossprod(u)) / RX^2)
 
     if("region_cluster" %in% method)
