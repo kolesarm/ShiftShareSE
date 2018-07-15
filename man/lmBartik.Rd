@@ -5,7 +5,8 @@
 \title{Inference in a regression with Bartik structure}
 \usage{
 lmBartik(formula, data, subset, weights, Xs, W, method, beta0 = 0,
-  alpha = 0.05, region_cvar = NULL, residual_sector = FALSE)
+  alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
+  residual_sector = FALSE)
 }
 \arguments{
 \item{formula}{object of class \code{"formula"} (or one that can be coerced
@@ -54,6 +55,9 @@ share of sector \code{s} in region \code{i}}
 \item{region_cvar}{A vector of cluster variables, for method
 \code{cluster_region}. If the vector \code{1:N} is used, clustering is
 effectively equivalent to \code{ehw}}
+
+\item{sector_cvar}{A vector of cluster variables, if sectors are to be clustered. If
+the vector \code{1:S} is used, this is equivalent to not clustering.}
 
 \item{residual_sector}{create a dummy residual sector so weights sum to one.}
 }

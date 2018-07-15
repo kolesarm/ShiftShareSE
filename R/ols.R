@@ -5,7 +5,8 @@
 #' @inheritParams lmBartik.fit
 #' @export
 lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
-                     alpha=0.05, region_cvar=NULL, residual_sector=FALSE) {
+                     alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
+                     residual_sector=FALSE) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
@@ -26,7 +27,7 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
     Z <- if (stats::is.empty.model(mt)) NULL
          else stats::model.matrix(mt, mf, contrasts=NULL)
 
-    ret <- lmBartik.fit(y, Xs, W, Z, w, method, beta0, alpha, rc,
+    ret <- lmBartik.fit(y, Xs, W, Z, w, method, beta0, alpha, rc, sector_cvar,
                         residual_sector)
 
     ret$call <- cl
@@ -67,40 +68,41 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
 #' @param region_cvar A vector of cluster variables, for method
 #'     \code{cluster_region}. If the vector \code{1:N} is used, clustering is
 #'     effectively equivalent to \code{ehw}
+#' @param sector_cvar A vector of cluster variables, if sectors are to be
+#'     clustered. If the vector \code{1:S} is used, this is equivalent to not
+#'     clustering.
 #' @param residual_sector create a dummy residual sector so weights sum to one.
 #' @export
-lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
-                         beta0=0, alpha=0.05, region_cvar=NULL,
+lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
+                         alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
                          residual_sector=FALSE) {
-    if (residual_sector) {
-        W <- cbind(W, 1-rowSums(W))
-        Xs <- c(Xs, 0)
-    }
-
     X <- drop(W %*% Xs)
     mm <- cbind(X, Z)
     r <- if (is.null(w)) stats::lm.fit(mm, y) else stats::lm.wfit(mm, y, w)
-
     betahat <- unname(r$coefficients[1])
     n <- NROW(mm)
     p <- r$rank
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
 
-    wgt <- if (is.null(w)) 1 else w
-
     if("all" %in% method)
         method <- c("homosk", "robust", "region_cluster", "akm", "akm0")
+
+    W0 <- if (residual_sector) cbind(W, 1-rowSums(W)) else W
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
         ddY <- stats::lm.fit(y=y, x=Z)$residuals # \ddot{Y}
-        hX <- stats::lm.fit(y=ddX, x=W)$coefficients #  \hat{\Xs}
+        hX <- stats::lm.fit(y=ddX, x=W0)$coefficients #  \hat{\Xs}
     } else {
         ddX <- stats::lm.wfit(y=X, x=Z, w=w)$residuals
         ddY <- stats::lm.wfit(y=y, x=Z, w=w)$residuals
-        hX <- stats::lm.wfit(y=ddX, x=W, w=w)$coefficients
+        hX <- stats::lm.wfit(y=ddX, x=W0, w=w)$coefficients
     }
+    if (residual_sector)
+        hX <- hX[1:(length(hX)-1)]
+
+    wgt <- if (is.null(w)) 1 else w
     RX <- sum(wgt * ddX^2)
 
     if("homosk" %in% method) {
@@ -119,28 +121,30 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
     }
 
     if ("akm" %in% method | "akm0" %in% method) {
-        if (residual_sector)
-            hX[length(hX)] <- 0
-        hR <- drop(crossprod(wgt * r$residuals, W))
-        hXhR <- sum(hX^2*hR^2)
+        cR <- hX*drop(crossprod(wgt * r$residuals, W))
+        cR0 <- hX*drop(crossprod(wgt * (ddY-ddX*beta0), W))
+        cW <- hX*drop(crossprod(wgt * ddX, W))
+        if (!is.null(sector_cvar)) {
+            cR <- tapply(cR, factor(sector_cvar), sum)
+            cR0 <- tapply(cR0, factor(sector_cvar), sum)
+            cW <- tapply(cW, factor(sector_cvar), sum)
+        }
     }
 
     if ("akm" %in% method)
-        se.akm <- sqrt(hXhR) / RX
+        se.akm <- sqrt(sum(cR^2)) / RX
 
     cil.akm0 <- cir.akm0 <- NA
     cv <- stats::qnorm(1-alpha/2)
 
     if ("akm0" %in% method) {
-        hR0 <- drop(crossprod(wgt * (ddY-ddX*beta0), W))
-        se.akm0 <- sqrt(sum(hX^2*hR0^2)) / RX
+        se.akm0 <- sqrt(sum(cR0^2)) / RX
 
         ## Now build CI
-        wx <- drop(crossprod(wgt * ddX, W))
-        Q <- RX^2/cv^2 - sum(hX^2*wx^2)
-        Q2 <- sum(hX^2*hR*wx)
-        mid <- betahat -  Q2 / Q
-        dis <- (Q2/Q)^2 + hXhR / Q
+        Q <- RX^2/cv^2 - sum(cW^2)
+        Q2 <- sum(cR*cW)/Q
+        mid <- betahat -  Q2
+        dis <- Q2^2 + sum(cR^2) / Q
 
         if (Q>0) {
             cir.akm0 <- mid + sqrt(dis)

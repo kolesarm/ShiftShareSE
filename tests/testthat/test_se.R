@@ -6,19 +6,19 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
           l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
           division"
-    ADH$X <- ADH_W %*% ADH_Xs
+    ADH$reg$X <- ADH$W %*% ADH$sec$X
 
     ## Compare with stata
     ## readstata13::save.dta13(ADH, file="adh.dta")
 
     ## First stage
-    r1 <- lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH, weights=weights)
-    b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                   data=ADH, weights=weights, region_cvar=statefip,
+    r1 <- lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH$reg, weights=weights)
+    b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+                   data=ADH$reg, weights=weights, region_cvar=statefip,
                    method="all")
-    r2 <- lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH)
-    b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                   data=ADH, method="all", region_cvar=statefip)
+    r2 <- lm(as.formula(paste("shock ~ X+", ctrls)), data=ADH$reg)
+    b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+                   data=ADH$reg, method="all", region_cvar=statefip)
 
     expect_equal(unname(summary(r1)$coefficients[2, 1:2]),
                  unname(c(b1$beta, b1$se[1])))
@@ -30,14 +30,14 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
                  unname(c(b2$se[1:3], b1$se[1:3])))
 
     ## Reduced form
-    r3 <- lm(as.formula(paste("d_sh_empl_mfg ~ X+", ctrls)), data=ADH,
+    r3 <- lm(as.formula(paste("d_sh_empl_mfg ~ X+", ctrls)), data=ADH$reg,
              weights=weights)
-    b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
-                   Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+    b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+                   Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
-    r4 <- lm(as.formula(paste("d_sh_empl_mfg ~ X+", ctrls)), data=ADH)
-    b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
-                   Xs=ADH_Xs, data=ADH, region_cvar=statefip, method="all")
+    r4 <- lm(as.formula(paste("d_sh_empl_mfg ~ X+", ctrls)), data=ADH$reg)
+    b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+                   Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip, method="all")
 
     expect_equal(unname(summary(r3)$coefficients[2, 1:2]),
                  unname(c(b3$beta, b3$se[1])))
@@ -51,14 +51,14 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     ## IV
     r5 <- AER::ivreg(as.formula(paste("d_sh_empl_mfg ~ shock+",
                                       ctrls, "| X+", ctrls)),
-                   data=ADH, weights=weights)
+                   data=ADH$reg, weights=weights)
     b5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
-                   W=ADH_W, Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                   W=ADH$W, Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
     r6 <- AER::ivreg(as.formula(paste("d_sh_empl_mfg ~ shock+",
-                                      ctrls, "| X+", ctrls)), data=ADH)
+                                      ctrls, "| X+", ctrls)), data=ADH$reg)
     b6 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
-                   W=ADH_W, Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                   W=ADH$W, Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                    method="all")
 
     ## No small-sample correction, as is default in Stata
@@ -81,16 +81,16 @@ test_that("AKM and AKM0 standard errors on ADH data", {
           division"
 
     ## First stage
-    b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                   data=ADH, weights=weights, region_cvar=statefip,
+    b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+                   data=ADH$reg, weights=weights, region_cvar=statefip,
                    method="all")
     ## Reduced form
-    b3 <- lmBartik(as.formula(paste("d_sh_empl ~ ", ctrls)), W=ADH_W,
-                   Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+    b3 <- lmBartik(as.formula(paste("d_sh_empl ~ ", ctrls)), W=ADH$W,
+                   Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
     ## IV
     b5 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
-                   W=ADH_W, Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+                   W=ADH$W, Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
 
     ## From rodrigo

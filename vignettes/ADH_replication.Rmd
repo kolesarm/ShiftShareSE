@@ -26,24 +26,24 @@ The package `BartikSE` implements confidence intervals proposed by @akm18 for
 this package. For now, we will just try to replicate Rodrigo's results for our
 [@adh13, ADH hereafter] application.
 
-The package contains the following data: a data frame `ADH` that contains the
-outcome and control variables, `ADH_Xs` that is a vector of sectoral shocks that
-we reconstructed, and `ADH_W`, the matrix of sectoral weights.
+The package contains the following data: list `ADH` that contains the
+outcome and control variables, `ADH$sec` that is a vector of sectoral shocks that
+we reconstructed, and `ADH$W`, the matrix of sectoral weights.
 
 The correlation with the IV in ADH is quite high:
 ```{r}
 library("BartikSE")
 ## Aggregate sectoral shocks
-ADH$X <- ADH_W %*% ADH_Xs
+ADH$reg$X <- ADH$W %*% ADH$sec$X
 
-cor(ADH$X, ADH$IV)
+cor(ADH$reg$X, ADH$reg$IV)
 ```
 
 Strangely, there is almost a deterministic relationship between `IV` and `X`:
 
 ```{r fig.width=4.5, fig.height=3.5, fig.cap="ADH IV variable reconstruction"}
 ## See Figure 1 below for output
-ggplot2::qplot(ADH$X, ADH$IV)+ggplot2::geom_abline(slope=1, intercept=0)+ggplot2::theme_bw()+
+ggplot2::qplot(ADH$reg$X, ADH$reg$IV)+ggplot2::geom_abline(slope=1, intercept=0)+ggplot2::theme_bw()+
     ggplot2::labs(x="Our reconstruction", y="IV variable in ADH")
 ```
 
@@ -59,24 +59,24 @@ standard errors (I haven't coded up clustering of sectors yet):
 ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
           l_sh_empl_f + l_sh_routine33 + l_task_outsource + division"
 ## First stage
-b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                data=ADH, weights=weights, region_cvar=statefip, method="all")
-b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH_W, Xs=ADH_Xs,
-                data=ADH, method="all", region_cvar=statefip)
+b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+                data=ADH$reg, weights=weights, region_cvar=statefip, method="all")
+b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+                data=ADH$reg, method="all", region_cvar=statefip)
 ## Reduced form
-b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
-               Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+               Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                weights=weights,
                method="all")
-b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH_W,
-               Xs=ADH_Xs, data=ADH, region_cvar=statefip, method="all")
+b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+               Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip, method="all")
 
 ## IV
-b5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")), W=ADH_W,
-                Xs=ADH_Xs, data=ADH, region_cvar=statefip,
+b5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")), W=ADH$W,
+                Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
                 weights=weights, method="all")
-b6 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")), W=ADH_W,
-                Xs=ADH_Xs, data=ADH, region_cvar=statefip, method="all")
+b6 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")), W=ADH$W,
+                Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip, method="all")
 ```
 
 IV, first stage and reduced form for weighted regressions:

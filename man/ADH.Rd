@@ -4,8 +4,9 @@
 \name{ADH}
 \alias{ADH}
 \title{Dataset from Autor, Dorn and Hanson (2013)}
-\format{A data frame with 1,444 rows and 16 variables. The rows correspond to
-    722 commuting zones (CZ) over 2 time periods (1990-1999 and 2000-2007)
+\format{A list with data frames. The first data frame,\code{r} has 1,444
+    rows and 16 variables. The rows correspond to 722 commuting zones (CZ)
+    over 2 time periods (1990-1999 and 2000-2007)
 
 \describe{
 \item{d_sh_empl}{}
@@ -24,7 +25,11 @@
 \item{l_sh_routine33}{}
 \item{l_task_outsource}{}
 \item{division}{US Census division of CZ}
-}}
+}
+
+The second data frame, \code{s} has 775 rows and two columns, the first
+corresponding to sectoral shocks and the second to SIC code. The third
+object, \code{W}, is a weight matrix.}
 \source{
 David Dorn's website \url{http://ddorn.net/data.htm}
 }

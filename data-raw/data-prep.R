@@ -9,6 +9,7 @@ ctrls <- readxl::read_excel("DataADH_check.xlsx", sheet=2)
 ## ADH_Xs <- readxl::read_excel("DataADH_check.xlsx", sheet=4,
 ##                              col_names=FALSE)$X__1
 ADH_Xs <- readxl::read_excel("DataADH_check.xlsx", sheet=4)$OTH
+sic <- readxl::read_excel("DataADH_check.xlsx", sheet=4)$sic
 ADH_W <- unname(as.matrix(readxl::read_excel("DataADH_check.xlsx",
                                          sheet=3, col_names=FALSE)))
 ADH <- cbind(d, ctrls)
@@ -37,9 +38,9 @@ ADH$division <- as.factor(ADH$division)
 names(ADH)[4:7] <- c("shock", "IV", "weights", "statefip")
 ADH$t2 <- ADH$t2==1
 
-
 ADH[, c(9:10, 13:20)] <- NULL
 
+## Combine all into one object
+ADH <- list(reg=ADH, sec=data.frame(X=ADH_Xs, sic=sic), W=ADH_W)
+
 devtools::use_data(ADH, overwrite=TRUE, internal=FALSE)
-devtools::use_data(ADH_Xs, overwrite=TRUE, internal=FALSE)
-devtools::use_data(ADH_W, overwrite=TRUE, internal=FALSE)
