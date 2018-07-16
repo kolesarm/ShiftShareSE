@@ -1,8 +1,25 @@
-#' Inference in a regression with Bartik structure
+#' Inference in a shift-share regression
+#'
+#' Computes confidence intervals and p-values in a regression in which the
+#' regressor of interest has a shift-share structure, as in Bartik (1991).
+#' Several different inference methods can computed, as specified by
+#' \code{method}.
 #'
 #' @template formula
 #' @template shocks
+#' @template method
 #' @inheritParams lmBartik.fit
+#' @references{
+#'
+#' \cite{Bartik, Timothy J., Who Benefits from State and Local Economic
+#' Development Policies?, Kalamazoo, MI: W.E. Upjohn Institute for Employment
+#' Research, 1991.}
+#'
+#' }
+#' @examples
+#' ## Use ADH data from Autor, Dorn, and Hanson (2013)
+#' lmBartik(d_sh_empl ~ 1, W=ADH$W, Xs=ADH$sec$X, data=ADH$reg,
+#'          method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
 #' @export
 lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
                      alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
@@ -36,42 +53,19 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
 }
 
 
-#' Inference in a regression with Bartik structure
+#' Inference in a shift-share regression
 #'
-#' Basic computing engine to calculate, confidence intervals, and p-values in
-#' Bartik designs using different inference methods, as specified by
-#' \code{method}
+#' Basic computing engine to calculate confidence intervals and p-values in
+#' shift-share designs using different inference methods, as specified by
+#' \code{method}.
 #' @param y Outcome variable, vector of length \code{N}
-#' @param Z Matrix of regional controls, matrix with \code{N} rows
+#' @param Z Matrix of regional controls, matrix with \code{N} rows corresponding
+#'     to regions.
 #' @template shocks
-#' @param method Vector specifying which inference methods to use:
-#'
-#' \describe{
-#'
-#' \item{\code{"homosk"}}{Assume i.i.d. homoskedastic errors}
-#'
-#' \item{\code{"ehw"}}{Eicker-Huber-White standard errors}
-#'
-#' \item{\code{"region_cluster"}}{Clustered standard errors at regional level}
-#'
-#' \item{\code{"akm"}}{Adao-Kolesar-Morales}
-#'
-#' \item{\code{"akmnull"}}{Adao-Kolesar-Morales with null imposed}
-#'
-#' \item{\code{"all"}}{All of the methods above}},
-#' @param alpha Significance level (confidence intervals will have coverage
-#'     \code{1-alpha})
+#' @template method
 #' @param w vector of weights (length \code{N}) to be used in the fitting
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
-#' @param beta0 null that is tested (for p-values)
-#' @param region_cvar A vector of cluster variables, for method
-#'     \code{cluster_region}. If the vector \code{1:N} is used, clustering is
-#'     effectively equivalent to \code{ehw}
-#' @param sector_cvar A vector of cluster variables, if sectors are to be
-#'     clustered. If the vector \code{1:S} is used, this is equivalent to not
-#'     clustering.
-#' @param residual_sector create a dummy residual sector so weights sum to one.
 #' @export
 lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
                          alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
@@ -88,7 +82,9 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     if("all" %in% method)
         method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
 
-    W0 <- if (residual_sector) cbind(W, 1-rowSums(W)) else W
+    rs <- residual_sector && !isTRUE(all.equal(rowSums(W), rep(1, nrow(W))))
+
+    W0 <- if (rs) cbind(W, 1-rowSums(W)) else W
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
@@ -99,8 +95,7 @@ lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         ddY <- stats::lm.wfit(y=y, x=Z, w=w)$residuals
         hX <- stats::lm.wfit(y=ddX, x=W0, w=w)$coefficients
     }
-    if (residual_sector)
-        hX <- hX[1:(length(hX)-1)]
+    if (rs) hX <- hX[1:(length(hX)-1)]
 
     wgt <- if (is.null(w)) 1 else w
     RX <- sum(wgt * ddX^2)

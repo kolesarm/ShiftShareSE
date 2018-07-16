@@ -2,7 +2,7 @@
 % Please edit documentation in R/ols.R
 \name{lmBartik}
 \alias{lmBartik}
-\title{Inference in a regression with Bartik structure}
+\title{Inference in a least squares regression with shift-share structure}
 \usage{
 lmBartik(formula, data, subset, weights, Xs, W, method, beta0 = 0,
   alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
@@ -24,14 +24,16 @@ in the fitting process.}
 \item{weights}{an optional vector of weights to be used in the fitting
 process. Should be \code{NULL} or a numeric vector. If non-\code{NULL},
 weighted least squares is used with weights \code{weights} (that is,
-minimizing \code{sum(weights*residuals^2)}); otherwise ordinary least squares is used.}
+minimizing \code{sum(weights*residuals^2)}); otherwise ordinary least
+squares is used.}
 
-\item{Xs}{A vector of sector-level shocks.}
+\item{Xs}{A vector of sector-level shocks / shifters.}
 
 \item{W}{A matrix of sector shares, so that \code{W[i, s]} corresponds to
 share of sector \code{s} in region \code{i}}
 
-\item{method}{Vector specifying which inference methods to use:
+\item{method}{Vector specifying which inference methods to use. The vector
+    elements have to be one or more of the following strings:
 
 \describe{
 
@@ -39,30 +41,35 @@ share of sector \code{s} in region \code{i}}
 
 \item{\code{"ehw"}}{Eicker-Huber-White standard errors}
 
-\item{\code{"region_cluster"}}{Clustered standard errors at regional level}
+\item{\code{"region_cluster"}}{Standard errors clustered at regional level}
 
-\item{\code{"akm"}}{Adao-Kolesar-Morales}
+\item{\code{"akm"}}{Adão-Kolesár-Morales}
 
-\item{\code{"akmnull"}}{Adao-Kolesar-Morales with null imposed}
+\item{\code{"akm0"}}{Adão-Kolesár-Morales with null imposed}
 
 \item{\code{"all"}}{All of the methods above}},}
 
-\item{beta0}{null that is tested (for p-values)}
+\item{beta0}{null that is tested (only affects reported p-values)}
 
-\item{alpha}{Significance level (confidence intervals will have coverage
-\code{1-alpha})}
+\item{alpha}{Determines confidence level of reported confidence intervals,
+which will have coverage \code{1-alpha}.}
 
-\item{region_cvar}{A vector of cluster variables, for method
-\code{cluster_region}. If the vector \code{1:N} is used, clustering is
-effectively equivalent to \code{ehw}}
+\item{region_cvar}{A vector with length \code{N} of cluster variables, for
+method \code{"cluster_region"}. If the vector \code{1:N} is used,
+clustering is effectively equivalent to \code{ehw}}
 
-\item{sector_cvar}{A vector of cluster variables, if sectors are to be clustered. If
-the vector \code{1:S} is used, this is equivalent to not clustering.}
+\item{sector_cvar}{A vector with length \code{S} of cluster variables, if
+sectors are to be clustered, for methods \code{"akm"} and \code{"akm0"}.
+If the vector \code{1:S} is used, this is equivalent to not clustering.}
 
-\item{residual_sector}{create a dummy residual sector so weights sum to one.}
+\item{residual_sector}{If the sectors do not sum to one, should a dummy
+residual sector be created?}
 }
 \description{
-Inference in a regression with Bartik structure
+Computes confidence intervals and p-values in a regression in which the
+regressor of interest has a shift-share structure, as in Bartik (1991).
+Several different inference methods can computed, as specified by
+\code{method}.
 }
 \section{Note}{
 
@@ -70,3 +77,17 @@ Inference in a regression with Bartik structure
 that is first in \code{data} and then in the environment of \code{formula}.
 }
 
+\examples{
+## Use ADH data from Autor, Dorn, and Hanson (2013)
+lmBartik(d_sh_empl ~ 1, W=ADH$W, Xs=ADH$sec$X, data=ADH$reg,
+         method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
+}
+\references{
+{
+
+\cite{Bartik, Timothy J., Who Benefits from State and Local Economic
+Development Policies?, Kalamazoo, MI: W.E. Upjohn Institute for Employment
+Research, 1991.}
+
+}
+}

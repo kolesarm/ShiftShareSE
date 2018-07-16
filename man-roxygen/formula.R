@@ -14,4 +14,5 @@
 #' @param weights an optional vector of weights to be used in the fitting
 #'     process. Should be \code{NULL} or a numeric vector. If non-\code{NULL},
 #'     weighted least squares is used with weights \code{weights} (that is,
-#'     minimizing \code{sum(weights*residuals^2)}); otherwise ordinary least squares is used.
+#'     minimizing \code{sum(weights*residuals^2)}); otherwise ordinary least
+#'     squares is used.

@@ -126,7 +126,8 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     ## RF and IV p-values need to match under the null
     expect_equal(b3$p["AKM0"], b5$p["AKM0"])
 
-    ## Table 6: residual sector, and also clustering
+    ## Simulatuions with US CZs/results_20180707.xlsx Table 6: residual
+    ## sector, and also clustering
     a1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=Xs,
                    data=ADH$reg, weights=weights, region_cvar=statefip,
                    method="all", residual_sector=TRUE)

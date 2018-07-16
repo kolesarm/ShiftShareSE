@@ -4,32 +4,61 @@
 \name{ADH}
 \alias{ADH}
 \title{Dataset from Autor, Dorn and Hanson (2013)}
-\format{A list with data frames. The first data frame,\code{r} has 1,444
-    rows and 16 variables. The rows correspond to 722 commuting zones (CZ)
-    over 2 time periods (1990-1999 and 2000-2007)
+\format{A list, consisting of two data frames and one matrix. The first data
+    frame, \code{ADH$reg}, has 1,444 rows and 16 variables. The rows
+    correspond to 722 commuting zones (CZ) over 2 time periods (1990-1999 and
+    2000-2007), and the variables are as follows:
 
 \describe{
-\item{d_sh_empl}{}
-\item{d_sh_empl_mfg}{}
-\item{d_sh_empl_nmfg}{}
-\item{shock}{}
-\item{IV}{}
-\item{weights}{}
+\item{d_sh_empl}{Change in the share of working-age population}
+
+\item{d_sh_empl_mfg}{Change in the share of working-age population employed
+in manufacturing.}
+
+\item{d_sh_empl_nmfg}{Change in the share of working-age population employed
+  in non-manufacturing.}
+
+\item{shock}{Change in sectoral U.S. imports from China normalized by U.S.
+total employment in the corresponding sector, aggregated to regional level.
+This is the variable of interest in ADH.}
+
+\item{IV}{Variable used in ADH to instrument for \code{shock}, as used in
+ADH. It does not quite correspond to instrument used in Adao, Kolesar, and
+Morales (2018), given by \code{ADH$W \%*\% ADH$sec$X}, due to slight
+differences when computing \code{ADH$sec$X}, which is not directly computed
+in ADH.}
+
+\item{weights}{Regression weights corresponding to start of period CZ share
+of national populations}
+
 \item{statefip}{State FIPS code}
-\item{czone}{Commuting zone number}
+\item{czone}{CZ number}
 \item{t2}{Indicator for 2000-2007}
-\item{l_shind_manuf_cbp}{}
-\item{l_sh_popedu_c}{}
-\item{l_sh_popfborn}{}
-\item{l_sh_empl_f}{}
-\item{l_sh_routine33}{}
-\item{l_task_outsource}{}
+\item{l_shind_manuf_cbp}{Employment share of manufacturing}
+\item{l_sh_popedu_c}{pc population college-educated}
+\item{l_sh_popfborn}{pc population foreign-born}
+\item{l_sh_empl_f}{pc employment among women}
+\item{l_sh_routine33}{pc employment in routine occupations}
+\item{l_task_outsource}{Offshorability index of occupations in CZ}
 \item{division}{US Census division of CZ}
 }
 
-The second data frame, \code{s} has 775 rows and two columns, the first
-corresponding to sectoral shocks and the second to SIC code. The third
-object, \code{W}, is a weight matrix.}
+The second data frame, \code{ADH$sec} has 775 rows and two variables. The
+rows correspond to 4-digit SIC industries over the 2 time periods, and the
+variables are:
+\describe{
+
+\item{X}{the instrument used in ADH corresponding to change in
+sectoral imports from China to other high-income countries (excluding the
+U.S.)}
+
+\item{sic}{4-digit SIC code of the industry}
+
+}
+
+
+Finally, \code{ADH$W} is a matrix of shares that correspond to the CZ
+employment shares in 4-digit SIC sectors.}
 \source{
 David Dorn's website \url{http://ddorn.net/data.htm}
 }
@@ -37,7 +66,8 @@ David Dorn's website \url{http://ddorn.net/data.htm}
 ADH
 }
 \description{
-Subset of ADH data.
+Subset of data from Autor, Dorn and Hanson (2013, ADH) that is used to
+illustrate the confidence intervals implemented in this package
 }
 \references{
 {
@@ -45,6 +75,9 @@ Subset of ADH data.
 \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:
 Local labor market effects of import competition in the United States,"
 American Economic Review, 2013, 103 (6), 2121–68.}
+
+\cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
+"Shift-Share Designs: Theory and Inference", 2018, arXiv:1806.07928}
 
 }
 }
