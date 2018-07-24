@@ -1,9 +1,9 @@
 #' Dataset from Autor, Dorn and Hanson (2013)
 #'
 #' Subset of data from Autor, Dorn and Hanson (2013, ADH) that is used to
-#' illustrate the confidence intervals implemented in this package
-#' @format A list, consisting of two data frames and one matrix. The first data
-#'     frame, \code{ADH$reg}, has 1,444 rows and 16 variables. The rows
+#' illustrate the confidence intervals implemented in this package.
+#' @format A list, consisting of a data frame, a vector, and a matrix. The first
+#'     data frame, \code{ADH$reg}, has 1,444 rows and 16 variables. The rows
 #'     correspond to 722 commuting zones (CZ) over 2 time periods (1990-1999 and
 #'     2000-2007), and the variables are as follows:
 #'
@@ -41,24 +41,16 @@
 #' \item{division}{US Census division of CZ}
 #' }
 #'
-#' The second data frame, \code{ADH$sec} has 775 rows and two variables. The
-#' rows correspond to 4-digit SIC industries over the 2 time periods, and the
-#' variables are:
-#' \describe{
+#' The second list component, the vector \code{ADH$sic} is a vector of length
+#' 770 that gives 4-digit SIC industry codes for the sectors used to construct
+#' the shift-share IV \code{ADH$reg$IV}. Finally, \code{ADH$W} is a 1444-by-700
+#' matrix of shares that correspond to the CZ employment shares in 4-digit SIC
+#' sectors.
 #'
-#' \item{X}{the instrument used in ADH corresponding to change in
-#' sectoral imports from China to other high-income countries (excluding the
-#' U.S.)}
-#'
-#' \item{sic}{4-digit SIC code of the industry}
-#'
-#' }
-#'
-#'
-#' Finally, \code{ADH$W} is a matrix of shares that correspond to the CZ
-#' employment shares in 4-digit SIC sectors.
-#'
-#' @source David Dorn's website \url{http://ddorn.net/data.htm}
+#' @source We thank David Dorn for helping us with the construction of the share
+#'     matrix. The remaining data was obtained from David Dorn's website,
+#'     \url{http://ddorn.net/data.htm} and email
+
 #' @references{
 #'
 #' \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:

@@ -17,16 +17,16 @@
 #' }
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
-#' ivBartik(d_sh_empl ~ 1 | shock, W=ADH$W, Xs=ADH$sec$X, data=ADH$reg,
+#' ivBartik(d_sh_empl ~ 1 | shock, X=IV, data=ADH$reg, W=ADH$W,
 #'          method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
 #' @export
-ivBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
+ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
                      alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
                      residual_sector=FALSE) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
-    m <- match(c("formula", "data", "subset", "weights", "region_cvar"),
+    m <- match(c("formula", "X", "data", "subset", "weights", "region_cvar"),
                names(mf), 0L)
     mf <- mf[c(1L, m)]
     formula <- Formula::as.Formula(formula)
@@ -52,7 +52,7 @@ ivBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
     attr(mty2, "intercept") <- 0
     y2 <- drop(stats::model.matrix(mty2, mf, contrasts=NULL))
 
-    ret <- ivBartik.fit(y1, y2, Xs, W, Z, w, method, beta0, alpha, rc,
+    ret <- ivBartik.fit(y1, y2, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
                         sector_cvar, residual_sector)
 
     ret$call <- cl
@@ -76,10 +76,10 @@ ivBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
-ivBartik.fit <- function(y1, y2, Xs, W, Z, w=NULL, method=c("akm", "akm0"),
-                         beta0=0, alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
-                         residual_sector=FALSE) {
-    X <- drop(W %*% Xs)
+ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
+                         beta0=0, alpha=0.05, region_cvar=NULL,
+                         sector_cvar=NULL, residual_sector=FALSE) {
+
     mm <- cbind(X, Z)
 
     r1 <- if (is.null(w)) stats::lm.fit(mm, y1) else stats::lm.wfit(mm, y1, w)

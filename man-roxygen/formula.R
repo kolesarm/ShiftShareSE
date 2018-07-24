@@ -1,6 +1,6 @@
-#' @section Note:
-#' \code{subset} is evaluated in the same way as variables in \code{formula},
-#' that is first in \code{data} and then in the environment of \code{formula}.
+#' @section Note: \code{subset} is evaluated in the same way as variables in
+#'     \code{formula}, that is first in \code{data} and then in the environment
+#'     of \code{formula}.
 
 #' @param formula object of class \code{"formula"} (or one that can be coerced
 #'     to that class) of the form \code{outcome ~ controls}

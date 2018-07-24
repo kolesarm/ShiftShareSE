@@ -33,9 +33,8 @@ $s$.
 This vignette illustrates the use of the package using a dataset from @adh13
 (ADH hereafter). The dataset is included in the package as the list `ADH`. The
 first element of the list, `ADH$reg` is a data-frame with regional variables,
-the second element, `ADH$sec` is a data-frame with sectoral variables (with
-column `X` correspondong to the shifters), and `ADH$W` is a matrix of shares.
-See `?ADH` for a description of the dataset.
+the second element, `ADH$sic` is a vector of SIC codes for the sectors, and
+`ADH$W` is a matrix of shares. See `?ADH` for a description of the dataset.
 
 We now replicate the first row of Table 6 in @akm18. First we load the package,
 define the vector of controls, and define a vector of 3-digit SIC codes:
@@ -43,23 +42,23 @@ define the vector of controls, and define a vector of 3-digit SIC codes:
 library("BartikSE")
 ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
           l_sh_empl_f + l_sh_routine33 + l_task_outsource + division"
-sic <- floor(ADH$sec$sic/10)
+sic <- floor(ADH$sic/10)
 ```
 
 The first-stage regression:
 ```{r}
-lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                data=ADH$reg, weights=weights, region_cvar=statefip,
                sector_cvar=sic, method="all", residual_sector=TRUE)
 ```
 
 The reduced-form and IV regressions:
 ```{r}
-lmBartik(as.formula(paste("d_sh_empl ~", ctrls)), W=ADH$W, Xs=ADH$sec$X,
+lmBartik(as.formula(paste("d_sh_empl ~", ctrls)), W=ADH$W, X=IV,
                   data=ADH$reg, region_cvar=statefip, weights=weights,
                   sector_cvar=sic, method="all", residual_sector=TRUE)
 ivBartik(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
-                  Xs=ADH$sec$X, data=ADH$reg, region_cvar=statefip,
+                  X=IV, data=ADH$reg, region_cvar=statefip,
                   weights=weights, sector_cvar=sic, method="all",
                   residual_sector=TRUE)
 ```

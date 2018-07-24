@@ -2,15 +2,19 @@
 % Please edit documentation in R/iv.R
 \name{ivBartik}
 \alias{ivBartik}
-\title{Inference in an IV regression with Bartik structure}
+\title{Inference in an IV regression with a shift-share instrument}
 \usage{
-ivBartik(formula, data, subset, weights, Xs, W, method, beta0 = 0,
+ivBartik(formula, X, data, W, subset, weights, method, beta0 = 0,
   alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
   residual_sector = FALSE)
 }
 \arguments{
 \item{formula}{object of class \code{"formula"} (or one that can be coerced
-to that class) of the form \code{outcome ~ controls | endogenous_regressor}}
+to that class) of the form \code{outcome ~ controls |
+endogenous_regressor}}
+
+\item{X}{Shift-share vector with length \code{N} of sectoral shocks,
+aggregated to regional level using the share matrix \code{W}.}
 
 \item{data}{optional data frame, list or environment (or object coercible by
 \code{as.data.frame} to a data frame) containing the outcome and running
@@ -18,18 +22,18 @@ variables in the model. If not found in \code{data}, the variables are
 taken from \code{environment(formula)}, typically the environment from
 which the function is called.}
 
+\item{W}{A matrix of sector shares, so that \code{W[i, s]} corresponds to
+share of sector \code{s} in region \code{i}}
+
 \item{subset}{optional vector specifying a subset of observations to be used
 in the fitting process.}
 
 \item{weights}{an optional vector of weights to be used in the fitting
 process. Should be \code{NULL} or a numeric vector. If non-\code{NULL},
-weighted least squares is used with weights \code{weights} (that is,
-minimizing \code{sum(weights*residuals^2)}); otherwise ordinary least squares is used.}
-
-\item{Xs}{A vector of sector-level shocks / shifters.}
-
-\item{W}{A matrix of sector shares, so that \code{W[i, s]} corresponds to
-share of sector \code{s} in region \code{i}}
+for computing the first stage and the reduced form, weighted least
+squares is used with weights \code{weights} (that is, minimizing
+\code{sum(weights*residuals^2)}); otherwise ordinary least squares is
+used.}
 
 \item{method}{Vector specifying which inference methods to use. The vector
     elements have to be one or more of the following strings:
@@ -71,14 +75,14 @@ regression in which the instrument has a shift-share structure, as in Bartik
 \code{method}.
 }
 \section{Note}{
-
-\code{subset} is evaluated in the same way as variables in \code{formula},
-that is first in \code{data} and then in the environment of \code{formula}.
+ \code{subset} is evaluated in the same way as variables in
+    \code{formula}, that is first in \code{data} and then in the environment
+    of \code{formula}.
 }
 
 \examples{
 ## Use ADH data from Autor, Dorn, and Hanson (2013)
-ivBartik(d_sh_empl ~ 1 | shock, W=ADH$W, Xs=ADH$sec$X, data=ADH$reg,
+ivBartik(d_sh_empl ~ 1 | shock, X=IV, data=ADH$reg, W=ADH$W,
          method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
 }
 \references{

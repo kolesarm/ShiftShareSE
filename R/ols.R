@@ -1,9 +1,9 @@
-#' Inference in a shift-share regression
+#' Inference in linear regression with a shift-share regressor
 #'
-#' Computes confidence intervals and p-values in a regression in which the
-#' regressor of interest has a shift-share structure, as in Bartik (1991).
-#' Several different inference methods can computed, as specified by
-#' \code{method}.
+#' Computes confidence intervals and p-values in a linear regression in which
+#' the regressor of interest has a shift-share structure, as the instrument in
+#' Bartik (1991). Several different inference methods can computed, as specified
+#' by \code{method}.
 #'
 #' @template formula
 #' @template shocks
@@ -18,16 +18,16 @@
 #' }
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
-#' lmBartik(d_sh_empl ~ 1, W=ADH$W, Xs=ADH$sec$X, data=ADH$reg,
+#' lmBartik(d_sh_empl ~ 1, X=IV, data=ADH$reg, W=ADH$W,
 #'          method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
 #' @export
-lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
+lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
                      alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
                      residual_sector=FALSE) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
-    m <- match(c("formula", "data", "subset", "weights", "region_cvar"),
+    m <- match(c("formula", "X", "data", "subset", "weights", "region_cvar"),
                names(mf), 0L)
     mf <- mf[c(1L, m)]
     mf[[1L]] <- quote(stats::model.frame)
@@ -44,8 +44,8 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
     Z <- if (stats::is.empty.model(mt)) NULL
          else stats::model.matrix(mt, mf, contrasts=NULL)
 
-    ret <- lmBartik.fit(y, Xs, W, Z, w, method, beta0, alpha, rc, sector_cvar,
-                        residual_sector)
+    ret <- lmBartik.fit(y, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
+                        sector_cvar, residual_sector)
 
     ret$call <- cl
     ret$terms <- mt
@@ -67,10 +67,9 @@ lmBartik <- function(formula, data, subset, weights, Xs, W, method, beta0=0,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
-lmBartik.fit <- function(y, Xs, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
+lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
                          alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
                          residual_sector=FALSE) {
-    X <- drop(W %*% Xs)
     mm <- cbind(X, Z)
     r <- if (is.null(w)) stats::lm.fit(mm, y) else stats::lm.wfit(mm, y, w)
     betahat <- unname(r$coefficients[1])

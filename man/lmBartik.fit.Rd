@@ -2,16 +2,17 @@
 % Please edit documentation in R/ols.R
 \name{lmBartik.fit}
 \alias{lmBartik.fit}
-\title{Inference in a regression with Bartik structure}
+\title{Inference in a shift-share regression}
 \usage{
-lmBartik.fit(y, Xs, W, Z, w = NULL, method = c("akm", "akm0"), beta0 = 0,
+lmBartik.fit(y, X, W, Z, w = NULL, method = c("akm", "akm0"), beta0 = 0,
   alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
   residual_sector = FALSE)
 }
 \arguments{
 \item{y}{Outcome variable, vector of length \code{N}}
 
-\item{Xs}{A vector of sector-level shocks / shifters.}
+\item{X}{Shift-share vector with length \code{N} of sectoral shocks,
+aggregated to regional level using the share matrix \code{W}.}
 
 \item{W}{A matrix of sector shares, so that \code{W[i, s]} corresponds to
 share of sector \code{s} in region \code{i}}
@@ -57,7 +58,7 @@ If the vector \code{1:S} is used, this is equivalent to not clustering.}
 residual sector be created?}
 }
 \description{
-Basic computing engine to calculate, confidence intervals, and p-values in
-Bartik designs using different inference methods, as specified by
-\code{method}
+Basic computing engine to calculate confidence intervals and p-values in
+shift-share designs using different inference methods, as specified by
+\code{method}.
 }

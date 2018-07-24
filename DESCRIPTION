@@ -1,6 +1,6 @@
 Package: BartikSE
 Title: Inference in regressions with shift-share structure
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 'Michal Kolesar <kolesarmi@googlemail.com> [aut, cre]'
 Description: Inference in least-squares regressions when the variable of
   interest has a shift-share structure, and in instrumental variables
