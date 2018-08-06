@@ -4,8 +4,8 @@
 \alias{lmBartik.fit}
 \title{Inference in a shift-share regression}
 \usage{
-lmBartik.fit(y, X, W, Z, w = NULL, method = c("akm", "akm0"), beta0 = 0,
-  alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
+lmBartik.fit(y, X, W, Z, w = NULL, method = c("akm", "akm0"),
+  beta0 = 0, alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
   residual_sector = FALSE)
 }
 \arguments{

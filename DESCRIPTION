@@ -1,10 +1,10 @@
 Package: BartikSE
 Title: Inference in regressions with shift-share structure
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 'Michal Kolesar <kolesarmi@googlemail.com> [aut, cre]'
-Description: Inference in least-squares regressions when the variable of
-  interest has a shift-share structure, and in instrumental variables
-  regressions when the instrument has a shift-share structure.
+Description: Provides confidence intervals in least-squares regressions when the
+  variable of interest has a shift-share structure, and in instrumental
+  variables regressions when the instrument has a shift-share structure.
 Depends: R (>= 3.4.0)
 License: GPL-3
 Encoding: UTF-8
@@ -16,4 +16,4 @@ Suggests: testthat,
     AER
 Imports: Formula
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
