@@ -20,11 +20,9 @@
 #' total employment in the corresponding sector, aggregated to regional level.
 #' This is the variable of interest in ADH.}
 #'
-#' \item{IV}{Variable used in ADH to instrument for \code{shock}, as used in
-#' ADH. It does not quite correspond to instrument used in Adao, Kolesar, and
-#' Morales (2018), given by \code{ADH$W \%*\% ADH$sec$X}, due to slight
-#' differences when computing \code{ADH$sec$X}, which is not directly computed
-#' in ADH.}
+#' \item{IV}{Change in sectoral imports from China by rest of the world,
+#' aggregated to regional level. This is the variable used to instrument for
+#' \code{shock}, called \code{d_tradeotch_pw_lag} in ADH.}
 #'
 #' \item{weights}{Regression weights corresponding to start of period CZ share
 #' of national populations}
@@ -49,7 +47,7 @@
 #'
 #' @source We thank David Dorn for helping us with the construction of the share
 #'     matrix. The remaining data was obtained from David Dorn's website,
-#'     \url{http://ddorn.net/data.htm} and email
+#'     \url{http://ddorn.net/data.htm}.
 
 #' @references{
 #'
