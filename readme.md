@@ -1,3 +1,5 @@
+[![Travis build status](https://travis-ci.org/kolesarm/BartikSE.svg?branch=master)](https://travis-ci.org/kolesarm/BartikSE)
+
 # BartikSE
 
 Confidence intervals in shift-share designs (also called [Bartik
@@ -6,7 +8,7 @@ Confidence intervals in shift-share designs (also called [Bartik
 [BartikSEMatlab](https://github.com/kolesarm/BartikSEMatlab) package for
 `Matlab` version of this code.
 
-See vignette `BartikSE.pdf` (stored under `inst/doc/`) for description of the
+See vignette `BartikSE.pdf` (stored under `doc/`) for description of the
 package.
 
 ## Installation

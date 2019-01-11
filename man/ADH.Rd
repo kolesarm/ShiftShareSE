@@ -4,48 +4,7 @@
 \name{ADH}
 \alias{ADH}
 \title{Dataset from Autor, Dorn and Hanson (2013)}
-\format{A list, consisting of a data frame, a vector, and a matrix. The first
-    data frame, \code{ADH$reg}, has 1,444 rows and 16 variables. The rows
-    correspond to 722 commuting zones (CZ) over 2 time periods (1990-1999 and
-    2000-2007), and the variables are as follows:
-
-\describe{
-\item{d_sh_empl}{Change in the share of working-age population}
-
-\item{d_sh_empl_mfg}{Change in the share of working-age population employed
-in manufacturing.}
-
-\item{d_sh_empl_nmfg}{Change in the share of working-age population employed
-  in non-manufacturing.}
-
-\item{shock}{Change in sectoral U.S. imports from China normalized by U.S.
-total employment in the corresponding sector, aggregated to regional level.
-This is the variable of interest in ADH.}
-
-\item{IV}{Change in sectoral imports from China by rest of the world,
-aggregated to regional level. This is the variable used to instrument for
-\code{shock}, called \code{d_tradeotch_pw_lag} in ADH.}
-
-\item{weights}{Regression weights corresponding to start of period CZ share
-of national populations}
-
-\item{statefip}{State FIPS code}
-\item{czone}{CZ number}
-\item{t2}{Indicator for 2000-2007}
-\item{l_shind_manuf_cbp}{Employment share of manufacturing}
-\item{l_sh_popedu_c}{pc population college-educated}
-\item{l_sh_popfborn}{pc population foreign-born}
-\item{l_sh_empl_f}{pc employment among women}
-\item{l_sh_routine33}{pc employment in routine occupations}
-\item{l_task_outsource}{Offshorability index of occupations in CZ}
-\item{division}{US Census division of CZ}
-}
-
-The second list component, the vector \code{ADH$sic} is a vector of length
-770 that gives 4-digit SIC industry codes for the sectors used to construct
-the shift-share IV \code{ADH$reg$IV}. Finally, \code{ADH$W} is a 1444-by-700
-matrix of shares that correspond to the CZ employment shares in 4-digit SIC
-sectors.}
+\format{An object of class \code{list} of length 3.}
 \source{
 We thank David Dorn for helping us with the construction of the share
     matrix. The remaining data was obtained from David Dorn's website,

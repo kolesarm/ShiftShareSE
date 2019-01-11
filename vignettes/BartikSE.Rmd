@@ -45,7 +45,7 @@ ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
 sic <- floor(ADH$sic/10)
 ```
 
-We cluster the standard errors at teh 3-digit SIC code (using the option
+We cluster the standard errors at the 3-digit SIC code (using the option
 `sector_cvar`), and, following ADH, weight the data using the weights
 `ADH$reg$weights`. See `?lmBartik` and `?IVBartik` for full description of the
 options.

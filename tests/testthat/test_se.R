@@ -195,7 +195,9 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     expect_equal(cir[-(1:2)],
                  unname(c(a5$ci.r[-1], c45$ci.r[4:5], c5$ci.r[4:5]))[-(1:2)])
     ## Small-sample correction
-    n <- 1444;p <- 17;nc <- 48;
+    n <- 1444
+    p <- 17
+    nc <- 48
     ssc <- sqrt((nc/(nc-1)) * (n-1)/(n-p))
     expect_equal(c(cil[2], cir[2]), unname(c(a5$beta-qnorm(0.975)*a5$se[3]*ssc,
                                       a5$beta+qnorm(0.975)*a5$se[3]*ssc)))
