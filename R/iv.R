@@ -169,7 +169,11 @@ ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
     p <- 2*(1-stats::pnorm(abs(betahat-beta0)/c(se, se.akm0)))
     ci.l <- c(betahat-cv*se, cil.akm0)
     ci.r <- c(betahat+cv*se, cir.akm0)
-    se <- c(se, (ci.r[5]-ci.l[5]) / (2*cv))
+    se.akm0 <- if (is.na(ci.l[5]) | ci.r[5]>ci.l[5])
+                   (ci.r[5]-ci.l[5]) / (2*cv)
+               else
+                   Inf
+    se <- c(se, se.akm0)
     names(se) <- names(ci.l) <- names(ci.r) <- names(p) <-
         c("Homoscedastic", "EHW", "Reg. cluster", "AKM", "AKM0")
 

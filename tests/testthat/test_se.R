@@ -205,3 +205,61 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     expect_equal(c(cil[1], cir[1]), unname(c(a5$beta-qnorm(0.975)*a5$se[2]*ssc,
                                       a5$beta+qnorm(0.975)*a5$se[2]*ssc)))
 })
+
+
+test_that("AKM0 under weak ID", {
+
+    ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
+          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
+          division"
+    iv0 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+                    W=ADH$W[as.numeric(ADH$reg$division)<8, ],
+                    X=IV, data=ADH$reg, region_cvar=statefip,
+                    method="akm0", residual_sector=TRUE,
+                    subset=as.numeric(division)<8)
+    iv1 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+                    W=ADH$W[as.numeric(ADH$reg$division)<7, ],
+                    X=IV, data=ADH$reg, region_cvar=statefip,
+                    method="akm0", residual_sector=TRUE,
+                    subset=as.numeric(division)<7)
+    iv2 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+                    W=ADH$W[as.numeric(ADH$reg$division)<6, ],
+                    X=IV, data=ADH$reg, region_cvar=statefip,
+                    method="akm0", residual_sector=TRUE,
+                    subset=as.numeric(division)<6)
+    expect_equal(unname(c(iv1$se[5], iv2$se[5])), c(Inf, Inf))
+    expect_lt(iv1$ci.r[5], iv1$ci.l[5])
+    expect_lt(iv0$ci.l[5], iv0$ci.r[5])
+    expect_equal(unname(c(iv2$ci.l[5], iv2$ci.r[5])), c(-Inf, Inf))
+
+    r0 <- lmBartik(as.formula(paste("shock ~ ", ctrls)),
+             W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
+             data=ADH$reg, weights=weights, region_cvar=statefip,
+             method="akm0", subset=as.numeric(division)>4, alpha=0.05)
+    expect_lt(r0$ci.l[5], r0$ci.r[5])
+    r1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)),
+             W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
+             data=ADH$reg, weights=weights, region_cvar=statefip,
+             method="akm0", subset=as.numeric(division)>4, alpha=0.045)
+
+    r2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)),
+             W=ADH$W[as.numeric(ADH$reg$division)<6, ], X=IV,
+             data=ADH$reg, weights=weights, region_cvar=statefip,
+             method="akm0", subset=as.numeric(division)<6)
+    expect_equal(unname(c(r1$se[5], r2$se[5])), c(Inf, Inf))
+    expect_lt(r1$ci.r[5], r1$ci.l[5])
+    expect_equal(unname(c(r2$ci.l[5], r2$ci.r[5])), c(-Inf, Inf))
+
+    ## Check it displays properly, and at the same time, check that print
+    ## function works properly
+    expect2 <- c("Estimate: 0.533953", "", "Inference:",
+                 "     Std. Error  p-value Lower CI Upper CI",
+                 "AKM0        Inf 0.859052     -Inf      Inf")
+    expect1 <- c("Estimate: 0.750267", "", "Inference:",
+                 "     Std. Error   p-value  Lower CI Upper CI",
+                 "AKM0        Inf 0.0658442 -0.564209 -14.0093")
+    o1 <- utils::capture.output(print(r1, digits=6))
+    o2 <- utils::capture.output(print(r2, digits=6))
+    expect_equal(o1, expect1)
+    expect_equal(o2, expect2)
+})
