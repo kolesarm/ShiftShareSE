@@ -10,11 +10,13 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Suggests:
-    spelling, testthat,
+    spelling,
+    testthat,
     knitr,
     rmarkdown,
     ggplot2,
-    AER
+    AER,
+    covr
 Imports: Formula
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
