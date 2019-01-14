@@ -1,4 +1,4 @@
-[![Travis build status](https://travis-ci.org/kolesarm/BartikSE.svg?branch=master)](https://travis-ci.org/kolesarm/BartikSE)
+[![Travis build status](https://travis-ci.org/kolesarm/BartikSE.svg?branch=master)](https://travis-ci.org/kolesarm/BartikSE) [![Coverage status](https://codecov.io/gh/kolesarm/BartikSE/branch/master/graph/badge.svg)](https://codecov.io/github/kolesarm/BartikSE?branch=master)
 
 # BartikSE
 
