@@ -15,8 +15,7 @@ Suggests:
     knitr,
     rmarkdown,
     ggplot2,
-    AER,
-    covr
+    AER
 Imports: Formula
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
