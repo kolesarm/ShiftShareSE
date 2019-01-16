@@ -1,7 +1,10 @@
 Package: BartikSE
 Title: Inference in regressions with shift-share structure
-Version: 0.1.3
-Authors@R: 'Michal Kolesar <kolesarmi@googlemail.com> [aut, cre]'
+Version: 0.1.4
+Authors@R: person(given = "Michal",
+                  family = "Kolesár",
+                  role = c("aut", "cre"),
+                  email = "kolesarmi@googlemail.com")
 Description: Provides confidence intervals in least-squares regressions when the
   variable of interest has a shift-share structure, and in instrumental
   variables regressions when the instrument has a shift-share structure.
