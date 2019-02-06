@@ -11,6 +11,8 @@ ivBartik(formula, X, data, W, subset, weights, method, beta0 = 0,
 \arguments{
 \item{formula}{object of class \code{"formula"} (or one that can be coerced
 to that class) of the form \code{outcome ~ controls |
+endogenous_regressor}. For a regresion with no controls (only an
+intercepte), it takes the form \code{outcome ~ 1 |
 endogenous_regressor}}
 
 \item{X}{Shift-share vector with length \code{N} of sectoral shocks,

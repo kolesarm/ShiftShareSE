@@ -10,7 +10,9 @@ lmBartik(formula, X, data, W, subset, weights, method, beta0 = 0,
 }
 \arguments{
 \item{formula}{object of class \code{"formula"} (or one that can be coerced
-to that class) of the form \code{outcome ~ controls}}
+to that class) of the form \code{outcome ~ controls}. For a regression
+with no controls (only an intercept), it takes the form \code{outcome ~
+1}}
 
 \item{X}{Shift-share vector with length \code{N} of sectoral shocks,
 aggregated to regional level using the share matrix \code{W}.}
