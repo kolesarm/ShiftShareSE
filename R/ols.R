@@ -109,9 +109,15 @@ lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         se.r <- sqrt((n / (n - p)) * drop(crossprod(u))) / RX
 
     if("region_cluster" %in% method) {
-        nc <- length(unique(region_cvar))      # # of clusters
-        se.s <- sqrt((nc/(nc-1)) * (n-1)/(n-p) *
+        if (is.null(region_cvar))
+            warning(paste0("Reporting NA for \"region_cluster\" Std. Error",
+                           " because \"region_cvar\" not supplied."))
+        else {
+            nc <- length(unique(region_cvar))      # # of clusters
+            se.s <-
+                sqrt((nc/(nc-1)) * (n-1)/(n-p) *
                      drop(crossprod(tapply(u, factor(region_cvar), sum)))) / RX
+        }
     }
 
     if ("akm" %in% method | "akm0" %in% method) {

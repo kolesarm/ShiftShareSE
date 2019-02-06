@@ -124,8 +124,12 @@ ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
         se.r <- sqrt(drop(crossprod(u)) / RX^2)
 
     if("region_cluster" %in% method)
-        se.s <- sqrt(drop(crossprod(tapply(u, factor(region_cvar), sum))) /
-                     RX^2)
+        if (is.null(region_cvar))
+            warning(paste0("Reporting NA for \"region_cluster\" Std. Error",
+                           " because \"region_cvar\" not supplied."))
+        else
+            se.s <- sqrt(drop(crossprod(tapply(u, factor(region_cvar), sum))) /
+                         RX^2)
 
     if ("akm" %in% method | "akm0" %in% method) {
         cR <- hX*drop(crossprod(wgt * resid, W))

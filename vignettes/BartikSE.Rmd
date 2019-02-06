@@ -57,6 +57,10 @@ lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                sector_cvar=sic, method="all")
 ```
 
+Note that for AKM0, `"Std. Error"` corresponds to the normalized standard error,
+given by the length of the confidence interval divided by $2z_{1-\alpha/2}$
+
+
 The reduced-form and IV regressions:
 ```{r}
 lmBartik(as.formula(paste("d_sh_empl ~", ctrls)), W=ADH$W, X=IV,

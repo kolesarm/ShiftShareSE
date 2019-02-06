@@ -9,7 +9,7 @@ Confidence intervals in shift-share designs (also called [Bartik
 `Matlab` version of this code.
 
 See vignette `BartikSE.pdf` (stored under `doc/`) for description of the
-package.
+package, and `manual.pdf` (also stored under `doc/`) for documentation.
 
 ## Installation
 

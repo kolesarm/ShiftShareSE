@@ -263,3 +263,16 @@ test_that("AKM0 under weak ID", {
     expect_equal(o1, expect1)
     expect_equal(o2, expect2)
 })
+
+context("Check warnings")
+test_that("Print warning if region_cvar not supplied", {
+
+    expect_warning(lmBartik(d_sh_empl ~ 1, W=ADH$W, X=IV,
+                            data=ADH$reg, method="all"))
+    expect_warning(ivBartik(d_sh_empl ~ 1 | shock, W=ADH$W,
+                              X=IV, data=ADH$reg, method="all"))
+    expect_warning(lmBartik(d_sh_empl ~ 1, W=ADH$W, X=IV,
+                            data=ADH$reg, method="region_cluster"))
+    expect_warning(ivBartik(d_sh_empl ~ 1 | shock, W=ADH$W,
+                              X=IV, data=ADH$reg, method="region_cluster"))
+})

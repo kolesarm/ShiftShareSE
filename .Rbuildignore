@@ -1,7 +1,7 @@
+^doc$
 ^codecov\.yml$
 ^\.travis\.yml$
 ^Meta$
-^doc$
 ^man-roxygen/*$
 .gitignore
 ^data-raw/*$

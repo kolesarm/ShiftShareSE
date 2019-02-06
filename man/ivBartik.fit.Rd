@@ -38,9 +38,12 @@ process. If not \code{NULL}, weighted least squares is used with weights
 
 \item{\code{"akm"}}{Adão-Kolesár-Morales}
 
-\item{\code{"akm0"}}{Adão-Kolesár-Morales with null imposed}
+\item{\code{"akm0"}}{Adão-Kolesár-Morales with null imposed. Note the
+reported standard error for this method corresponds to the normalized
+standard error, given by the length of the confidence interval divided by
+\eqn{2z_{1-\alpha/2}}{2z_{1-alpha/2}}}
 
-\item{\code{"all"}}{All of the methods above}},}
+\item{\code{"all"}}{All of the methods above}}}
 
 \item{beta0}{null that is tested (only affects reported p-values)}
 

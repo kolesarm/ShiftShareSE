@@ -4,7 +4,7 @@
 
 #' @param formula object of class \code{"formula"} (or one that can be coerced
 #'     to that class) of the form \code{outcome ~ controls |
-#'     endogenous_regressor}. For a regresion with no controls (only an
+#'     endogenous_regressor}. For a regression with no controls (only an
 #'     intercept), it takes the form \code{outcome ~ 1 | endogenous_regressor}
 #' @param data optional data frame, list or environment (or object coercible by
 #'     \code{as.data.frame} to a data frame) containing the outcome and running
