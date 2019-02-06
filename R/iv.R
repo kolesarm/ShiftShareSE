@@ -18,7 +18,7 @@
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
 #' ivBartik(d_sh_empl ~ 1 | shock, X=IV, data=ADH$reg, W=ADH$W,
-#'          method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
+#'          method=c("ehw", "akm", "akm0"))
 #' @export
 ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
                      alpha=0.05, region_cvar=NULL, sector_cvar=NULL,

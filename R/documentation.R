@@ -31,10 +31,10 @@
 #' \item{czone}{CZ number}
 #' \item{t2}{Indicator for 2000-2007}
 #' \item{l_shind_manuf_cbp}{Employment share of manufacturing}
-#' \item{l_sh_popedu_c}{% population college-educated}
-#' \item{l_sh_popfborn}{% population foreign-born}
-#' \item{l_sh_empl_f}{% employment among women}
-#' \item{l_sh_routine33}{% employment in routine occupations}
+#' \item{l_sh_popedu_c}{percent population college-educated}
+#' \item{l_sh_popfborn}{percent population foreign-born}
+#' \item{l_sh_empl_f}{percent employment among women}
+#' \item{l_sh_routine33}{percent employment in routine occupations}
 #' \item{l_task_outsource}{Offshorability index of occupations in CZ}
 #' \item{division}{US Census division of CZ}
 #' }
