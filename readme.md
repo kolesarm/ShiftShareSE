@@ -4,12 +4,13 @@
 
 Confidence intervals in shift-share designs (also called [Bartik
 (1991)](http://research.upjohn.org/up_press/77/) designs ) using procedures from
-[Adão, Kolesár, and Morales (2018)](https://arxiv.org/abs/1806.07928). See the
+[Adão, Kolesár, and Morales (2019)](https://arxiv.org/abs/1806.07928). See the
 [BartikSEMatlab](https://github.com/kolesarm/BartikSEMatlab) package for
 `Matlab` version of this code.
 
-See vignette `BartikSE.pdf` (stored under `doc/`) for description of the
-package, and `manual.pdf` (also stored under `doc/`) for documentation.
+See vignette [BartikSE](doc/BartikSE.pdf) for description of the package
+(available through `vignette("BartikSE")` once package is installed), and the
+package [manual](doc/manual.pdf) for documentation of the package functions.
 
 ## Installation
 

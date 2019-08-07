@@ -21,8 +21,7 @@
 #'          method=c("ehw", "akm", "akm0"))
 #' @export
 ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
-                     alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
-                     residual_sector=FALSE) {
+                     alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
@@ -53,7 +52,7 @@ ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
     y2 <- drop(stats::model.matrix(mty2, mf, contrasts=NULL))
 
     ret <- ivBartik.fit(y1, y2, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
-                        sector_cvar, residual_sector)
+                        sector_cvar)
 
     ret$call <- cl
     ret$terms <- mt
@@ -78,7 +77,7 @@ ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' @export
 ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
                          beta0=0, alpha=0.05, region_cvar=NULL,
-                         sector_cvar=NULL, residual_sector=FALSE) {
+                         sector_cvar=NULL) {
 
     mm <- cbind(X, Z)
 
@@ -90,8 +89,7 @@ ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
 
-    rs <- residual_sector && !isTRUE(all.equal(rowSums(W), rep(1, nrow(W))))
-    W0 <- if (rs) cbind(W, 1-rowSums(W)) else W
+    W0 <- W
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
@@ -104,7 +102,6 @@ ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
         ddY2 <- stats::lm.wfit(y=y2, x=Z, w=w)$residuals
         hX <- stats::lm.wfit(y=ddX, x=W0, w=w)$coefficients
     }
-    if (rs) hX <- hX[1:(length(hX)-1)]
 
     wgt <- if (!is.null(w)) w else 1
     RX <- sum(wgt * ddY2*ddX)

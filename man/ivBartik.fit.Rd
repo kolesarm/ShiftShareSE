@@ -5,8 +5,7 @@
 \title{Inference in an IV regression with a shift-share instrument}
 \usage{
 ivBartik.fit(y1, y2, X, W, Z, w = NULL, method = c("akm", "akm0"),
-  beta0 = 0, alpha = 0.05, region_cvar = NULL, sector_cvar = NULL,
-  residual_sector = FALSE)
+  beta0 = 0, alpha = 0.05, region_cvar = NULL, sector_cvar = NULL)
 }
 \arguments{
 \item{y1}{Outcome variable, vector of length \code{N}}
@@ -57,9 +56,6 @@ clustering is effectively equivalent to \code{ehw}}
 \item{sector_cvar}{A vector with length \code{S} of cluster variables, if
 sectors are to be clustered, for methods \code{"akm"} and \code{"akm0"}.
 If the vector \code{1:S} is used, this is equivalent to not clustering.}
-
-\item{residual_sector}{If the sectors do not sum to one, should a dummy
-residual sector be created?}
 }
 \description{
 Basic computing engine to calculate confidence intervals and p-values in an

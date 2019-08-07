@@ -34,3 +34,22 @@ names(ADH1)[4:7] <- c("shock", "IV", "weights", "statefip")
 ADH <- list(reg=ADH1, sic=sic, W=ADH_W)
 
 devtools::use_data(ADH, overwrite=TRUE, internal=FALSE)
+
+## To check we match matlab version of the data, run
+## BartikSEMatlab/ADHapplication.m, and then:
+## Dt = [d_sh_empl, d_sh_empl_mfg, d_sh_empl_nmfg, d_tradeusch_pw, d_tradeotch_pw_lag, ...
+##       timepwt48, statefip, czone_all, t2, l_shind_manuf_cbp, l_sh_popedu_c, ...
+##       l_sh_popfborn, l_sh_empl_f, l_sh_routine33, l_task_outsource, 2*reg_midatl ...
+##       + 3*reg_encen + 4*reg_wncen +  5*reg_satl+ 6*reg_escen + 7*reg_wscen + ...
+##       8*reg_mount +  9*reg_pacif];
+## Dt(Dt(:, 16)==0, 16) =1;
+## save("temp.mat", "Dt", "share_emp_ind", "sec_vec");
+## a2 <- R.matlab::readMat("temp.mat")
+## Dt <- a2$Dt
+## Dt2 <- ADH$reg
+## Dt2$division <- as.numeric(as.character(Dt2$division))
+## Dt2 <- as.matrix(Dt2)
+## max(abs(Dt-Dt2))
+## ## 5e-14, 0, 3.46945e-18
+## max(abs(ADH$sic-a2$sec.vec))
+## max(abs(a2$share.emp.ind-ADH$W))

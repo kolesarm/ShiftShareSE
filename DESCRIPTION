@@ -1,6 +1,6 @@
 Package: BartikSE
 Title: Inference in regressions with shift-share structure
-Version: 0.1.5
+Version: 0.2.0
 Authors@R: person(given = "Michal",
                   family = "Kolesár",
                   role = c("aut", "cre"),
@@ -17,7 +17,6 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    ggplot2,
     AER
 Imports: Formula
 VignetteBuilder: knitr

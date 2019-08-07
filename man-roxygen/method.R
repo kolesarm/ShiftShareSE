@@ -26,5 +26,3 @@
 #'     If the vector \code{1:S} is used, this is equivalent to not clustering.
 #' @param alpha Determines confidence level of reported confidence intervals,
 #'     which will have coverage \code{1-alpha}.
-#' @param residual_sector If the sectors do not sum to one, should a dummy
-#'     residual sector be created?

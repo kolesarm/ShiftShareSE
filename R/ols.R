@@ -19,11 +19,10 @@
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
 #' lmBartik(d_sh_empl ~ 1, X=IV, data=ADH$reg, W=ADH$W,
-#'          method=c("ehw", "akm", "akm0"), residual_sector=TRUE)
+#'          method=c("ehw", "akm", "akm0"))
 #' @export
 lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
-                     alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
-                     residual_sector=FALSE) {
+                     alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
@@ -45,7 +44,7 @@ lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
          else stats::model.matrix(mt, mf, contrasts=NULL)
 
     ret <- lmBartik.fit(y, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
-                        sector_cvar, residual_sector)
+                        sector_cvar)
 
     ret$call <- cl
     ret$terms <- mt
@@ -68,8 +67,7 @@ lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
 lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
-                         alpha=0.05, region_cvar=NULL, sector_cvar=NULL,
-                         residual_sector=FALSE) {
+                         alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
     mm <- cbind(X, Z)
     r <- if (is.null(w)) stats::lm.fit(mm, y) else stats::lm.wfit(mm, y, w)
     betahat <- unname(r$coefficients[1])
@@ -81,9 +79,7 @@ lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     if("all" %in% method)
         method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
 
-    rs <- residual_sector && !isTRUE(all.equal(rowSums(W), rep(1, nrow(W))))
-
-    W0 <- if (rs) cbind(W, 1-rowSums(W)) else W
+    W0 <- W
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
@@ -94,7 +90,6 @@ lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         ddY <- stats::lm.wfit(y=y, x=Z, w=w)$residuals
         hX <- stats::lm.wfit(y=ddX, x=W0, w=w)$coefficients
     }
-    if (rs) hX <- hX[1:(length(hX)-1)]
 
     wgt <- if (is.null(w)) 1 else w
     RX <- sum(wgt * ddX^2)
@@ -183,10 +178,20 @@ print.BartikResults <- function(x, digits = getOption("digits"), ...) {
     cat("Estimate:", fmt(x$beta))
     s <- !is.na(x$se)
 
+
     r <- cbind("Std. Error"=x$se[s], "p-value"=x$p[s], "Lower CI"=x$ci.l[s],
                "Upper CI"=x$ci.r[s])
     cat("\n\nInference:\n")
-    print(r, digits=digits)
+    if (sum(r[, 3]<r[, 4]) > 0)
+        print(r[r[, 3]<r[, 4], , drop=FALSE], digits=digits) # nolint
+    ## AKM0 in format (-Inf, U) \cup (L, Inf)
+    if (sum(r[, 3]>r[, 4]) > 0) {
+        r2 <- r[r[, 3]>r[, 4], , drop=FALSE] # nolint
+        r2 <- data.frame(r2[, 1:2, drop=FALSE],
+                         "(-Inf", r2[, 4], "] + [", r2[, 3], "Inf )")
+        names(r2) <- c(colnames(r)[1:2], "CI", rep("", 4))
+        print(r2, digits=digits)
+    }
 
     invisible(x)
 }

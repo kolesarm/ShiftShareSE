@@ -36,7 +36,7 @@ first element of the list, `ADH$reg` is a data-frame with regional variables,
 the second element, `ADH$sic` is a vector of SIC codes for the sectors, and
 `ADH$W` is a matrix of shares. See `?ADH` for a description of the dataset.
 
-We now replicate the first row of Table 6 in @akm18. First we load the package,
+We now replicate column (1) of Table 5 in @akm18. First we load the package,
 define the vector of controls, and define a vector of 3-digit SIC codes:
 ```{r}
 library("BartikSE")
@@ -57,8 +57,9 @@ lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                sector_cvar=sic, method="all")
 ```
 
-Note that for AKM0, `"Std. Error"` corresponds to the normalized standard error,
-given by the length of the confidence interval divided by $2z_{1-\alpha/2}$
+Note that for `"AKM0"`, `"Std. Error"` corresponds to the normalized standard
+error, i.e. the length of the confidence interval divided by
+$2z_{1-\alpha/2}$.
 
 
 The reduced-form and IV regressions:
