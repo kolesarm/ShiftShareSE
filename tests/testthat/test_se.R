@@ -233,7 +233,11 @@ test_that("AKM0 under weak ID", {
           "AKM0        Inf 0.0658442 (-Inf -14.0093 ] + [ -0.564209 Inf )")
     o1 <- utils::capture.output(print(r1, digits=6))
     o2 <- utils::capture.output(print(r2, digits=6))
-    expect_equal(o1, expect1)
+    expect_equal(o1[1], expect1[1])
+    expect_equal(o1[2], expect1[2])
+    expect_equal(o1[3], expect1[3])
+    expect_equal(o1[4], expect1[4])
+    expect_equal(o1[5], expect1[5])
     expect_equal(o2, expect2)
 })
 
