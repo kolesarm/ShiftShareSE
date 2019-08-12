@@ -9,7 +9,7 @@ output:
     toc: false
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Inference in Bartik Designs}
+  %\VignetteIndexEntry{Inference in Shift Share Designs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(tidy = TRUE, collapse=TRUE, comment = "#>",
                       tidy.opts=list(blank=FALSE, width.cutoff=55))
 ```
 
-The package `BartikSE` implements confidence intervals proposed by @akm18 for
+The package `ShiftShareSE` implements confidence intervals proposed by @akm18 for
 inference in shift-share least squares and instrumental variables regressions,
 in which the regressor of interest (or the instrument) has a shift-share
 structure, as in @bartik91. A shift-share variable has the structure
@@ -39,7 +39,7 @@ the second element, `ADH$sic` is a vector of SIC codes for the sectors, and
 We now replicate column (1) of Table 5 in @akm18. First we load the package,
 define the vector of controls, and define a vector of 3-digit SIC codes:
 ```{r}
-library("BartikSE")
+library("ShiftShareSE")
 ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
           l_sh_empl_f + l_sh_routine33 + l_task_outsource + division"
 sic <- floor(ADH$sic/10)
@@ -47,12 +47,12 @@ sic <- floor(ADH$sic/10)
 
 We cluster the standard errors at the 3-digit SIC code (using the option
 `sector_cvar`), and, following ADH, weight the data using the weights
-`ADH$reg$weights`. See `?lmBartik` and `?IVBartik` for full description of the
+`ADH$reg$weights`. See `?reg_ss` and `?ivreg_ss` for full description of the
 options.
 
 The first-stage regression:
 ```{r}
-lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
+reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                data=ADH$reg, weights=weights, region_cvar=statefip,
                sector_cvar=sic, method="all")
 ```
@@ -64,10 +64,10 @@ $2z_{1-\alpha/2}$.
 
 The reduced-form and IV regressions:
 ```{r}
-lmBartik(as.formula(paste("d_sh_empl ~", ctrls)), W=ADH$W, X=IV,
+reg_ss(as.formula(paste("d_sh_empl ~", ctrls)), W=ADH$W, X=IV,
                   data=ADH$reg, region_cvar=statefip, weights=weights,
                   sector_cvar=sic, method="all")
-ivBartik(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
+ivreg_ss(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
                   X=IV, data=ADH$reg, region_cvar=statefip,
                   weights=weights, sector_cvar=sic, method="all")
 ```

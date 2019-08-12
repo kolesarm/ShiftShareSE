@@ -1,4 +1,4 @@
 library(testthat)
-library(BartikSE)
+library(ShiftShareSE)
 
-test_check("BartikSE")
+test_check("ShiftShareSE")

@@ -8,7 +8,7 @@
 #' @template formula
 #' @template shocks
 #' @template method
-#' @inheritParams lmBartik.fit
+#' @inheritParams reg_ss.fit
 #' @references{
 #'
 #' \cite{Bartik, Timothy J., Who Benefits from State and Local Economic
@@ -18,10 +18,10 @@
 #' }
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
-#' lmBartik(d_sh_empl ~ 1, X=IV, data=ADH$reg, W=ADH$W,
+#' reg_ss(d_sh_empl ~ 1, X=IV, data=ADH$reg, W=ADH$W,
 #'          method=c("ehw", "akm", "akm0"))
 #' @export
-lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
+reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
                      alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
 
     ## construct model frame
@@ -43,7 +43,7 @@ lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
     Z <- if (stats::is.empty.model(mt)) NULL
          else stats::model.matrix(mt, mf, contrasts=NULL)
 
-    ret <- lmBartik.fit(y, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
+    ret <- reg_ss.fit(y, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
                         sector_cvar)
 
     ret$call <- cl
@@ -66,7 +66,7 @@ lmBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
-lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
+reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
                          alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
     mm <- cbind(X, Z)
     r <- if (is.null(w)) stats::lm.fit(mm, y) else stats::lm.wfit(mm, y, w)
@@ -166,12 +166,12 @@ lmBartik.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         c("Homoscedastic", "EHW", "Reg. cluster", "AKM", "AKM0")
 
     structure(list(beta=betahat, se=se,
-                   p=p, ci.l=ci.l, ci.r=ci.r), class="BartikResults")
+                   p=p, ci.l=ci.l, ci.r=ci.r), class="SSResults")
 }
 
 
 #' @export
-print.BartikResults <- function(x, digits = getOption("digits"), ...) {
+print.SSResults <- function(x, digits = getOption("digits"), ...) {
 
     fmt <- function(x) format(x, digits=digits, width=digits+1)
 

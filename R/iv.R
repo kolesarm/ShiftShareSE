@@ -7,7 +7,7 @@
 #' @template formulaiv
 #' @template shocks
 #' @template method
-#' @inheritParams ivBartik.fit
+#' @inheritParams ivreg_ss.fit
 #' @references{
 #'
 #' \cite{Bartik, Timothy J., Who Benefits from State and Local Economic
@@ -17,10 +17,10 @@
 #' }
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
-#' ivBartik(d_sh_empl ~ 1 | shock, X=IV, data=ADH$reg, W=ADH$W,
+#' ivreg_ss(d_sh_empl ~ 1 | shock, X=IV, data=ADH$reg, W=ADH$W,
 #'          method=c("ehw", "akm", "akm0"))
 #' @export
-ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
+ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
                      alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
 
     ## construct model frame
@@ -51,7 +51,7 @@ ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
     attr(mty2, "intercept") <- 0
     y2 <- drop(stats::model.matrix(mty2, mf, contrasts=NULL))
 
-    ret <- ivBartik.fit(y1, y2, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
+    ret <- ivreg_ss.fit(y1, y2, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
                         sector_cvar)
 
     ret$call <- cl
@@ -75,7 +75,7 @@ ivBartik <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
-ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
+ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
                          beta0=0, alpha=0.05, region_cvar=NULL,
                          sector_cvar=NULL) {
 
@@ -179,5 +179,5 @@ ivBartik.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
         c("Homoscedastic", "EHW", "Reg. cluster", "AKM", "AKM0")
 
     structure(list(beta=betahat, se=se,
-                   p=p, ci.l=ci.l, ci.r=ci.r), class="BartikResults")
+                   p=p, ci.l=ci.l, ci.r=ci.r), class="SSResults")
 }

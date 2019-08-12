@@ -13,11 +13,11 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     ## First stage
     r1 <- lm(as.formula(paste("shock ~ IV+", ctrls)), data=ADH$reg,
              weights=weights)
-    b1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
+    b1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                    data=ADH$reg, weights=weights, region_cvar=statefip,
                    method=methods)
     r2 <- lm(as.formula(paste("shock ~ IV+", ctrls)), data=ADH$reg)
-    b2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
+    b2 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                    data=ADH$reg, method=methods, region_cvar=statefip)
 
     expect_equal(unname(summary(r1)$coefficients[2, 1:2]),
@@ -32,11 +32,11 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     ## Reduced form
     r3 <- lm(as.formula(paste("d_sh_empl_mfg ~ IV+", ctrls)), data=ADH$reg,
              weights=weights)
-    b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+    b3 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
                    X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method=methods)
     r4 <- lm(as.formula(paste("d_sh_empl_mfg ~ IV+", ctrls)), data=ADH$reg)
-    b4 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+    b4 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
                    X= IV, data=ADH$reg, region_cvar=statefip,
                    method=methods)
 
@@ -53,12 +53,12 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     r5 <- AER::ivreg(as.formula(paste("d_sh_empl_mfg ~ shock+",
                                       ctrls, "| IV+", ctrls)),
                    data=ADH$reg, weights=weights)
-    b5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
+    b5 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method=methods)
     r6 <- AER::ivreg(as.formula(paste("d_sh_empl_mfg ~ shock+",
                                       ctrls, "| IV+", ctrls)), data=ADH$reg)
-    b6 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
+    b6 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    method=methods)
 
@@ -83,29 +83,29 @@ test_that("AKM and AKM0 standard errors on ADH data", {
 
     ## 3-digit cluster and unclustered
     cvar <- floor(ADH$sic/10)
-    c1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
+    c1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                    data=ADH$reg, weights=weights, region_cvar=statefip,
                    sector_cvar=cvar, method="all")
-    c3 <- lmBartik(as.formula(paste("d_sh_empl ~ ", ctrls)), W=ADH$W,
+    c3 <- reg_ss(as.formula(paste("d_sh_empl ~ ", ctrls)), W=ADH$W,
                    X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, sector_cvar=cvar, method="all")
-    c5 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+    c5 <- ivreg_ss(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    sector_cvar=cvar, weights=weights, method="all")
-    a1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
+    a1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
                    data=ADH$reg, weights=weights, region_cvar=statefip,
                    method="all")
     ## manufacturing
-    b3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+    b3 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
                    X=IV, data=ADH$reg, region_cvar=statefip,
                    sector_cvar=cvar, weights=weights, method="all")
-    b5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
+    b5 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    sector_cvar=cvar, weights=weights, method="all")
-    a3 <- lmBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
+    a3 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
                    X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
-    a5 <- ivBartik(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
+    a5 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
     expect_equal(b3$p["AKM0"], b5$p["AKM0"])
@@ -115,7 +115,7 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     expect_identical(b5$p[1:3], a5$p[1:3])
 
     ## Use Replication package/Paper/Table 5/, and
-    ## BartikSEMatlab/ADHapplication.m for non-clustered errors
+    ## ShiftShareSEMatlab/ADHapplication.m for non-clustered errors
     est <- c(c1$beta, c3$beta, c5$beta)
     expect_equal(est,
                  c(0.631040938185757, -0.488568717122902, -0.774226658776735))
@@ -184,17 +184,17 @@ test_that("AKM0 under weak ID", {
     ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
           l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
           division"
-    iv0 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+    iv0 <- ivreg_ss(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
                     W=ADH$W[as.numeric(ADH$reg$division)<8, ],
                     X=IV, data=ADH$reg, region_cvar=statefip,
                     method="akm0",
                     subset=as.numeric(division)<8)
-    iv1 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+    iv1 <- ivreg_ss(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
                     W=ADH$W[as.numeric(ADH$reg$division)<7, ],
                     X=IV, data=ADH$reg, region_cvar=statefip,
                     method="akm0",
                     subset=as.numeric(division)<7)
-    iv2 <- ivBartik(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
+    iv2 <- ivreg_ss(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
                     W=ADH$W[as.numeric(ADH$reg$division)<6, ],
                     X=IV, data=ADH$reg, region_cvar=statefip,
                     method="akm0",
@@ -204,17 +204,17 @@ test_that("AKM0 under weak ID", {
     expect_lt(iv0$ci.l[5], iv0$ci.r[5])
     expect_equal(unname(c(iv2$ci.l[5], iv2$ci.r[5])), c(-Inf, Inf))
 
-    r0 <- lmBartik(as.formula(paste("shock ~ ", ctrls)),
+    r0 <- reg_ss(as.formula(paste("shock ~ ", ctrls)),
              W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
              data=ADH$reg, weights=weights, region_cvar=statefip,
              method="akm0", subset=as.numeric(division)>4, alpha=0.05)
     expect_lt(r0$ci.l[5], r0$ci.r[5])
-    r1 <- lmBartik(as.formula(paste("shock ~ ", ctrls)),
+    r1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)),
              W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
              data=ADH$reg, weights=weights, region_cvar=statefip,
              method="akm0", subset=as.numeric(division)>4, alpha=0.045)
 
-    r2 <- lmBartik(as.formula(paste("shock ~ ", ctrls)),
+    r2 <- reg_ss(as.formula(paste("shock ~ ", ctrls)),
              W=ADH$W[as.numeric(ADH$reg$division)<6, ], X=IV,
              data=ADH$reg, weights=weights, region_cvar=statefip,
              method="akm0", subset=as.numeric(division)<6)
@@ -240,12 +240,12 @@ test_that("AKM0 under weak ID", {
 context("Check warnings")
 test_that("Print warning if region_cvar not supplied", {
 
-    expect_warning(lmBartik(d_sh_empl ~ 1, W=ADH$W, X=IV,
+    expect_warning(reg_ss(d_sh_empl ~ 1, W=ADH$W, X=IV,
                             data=ADH$reg, method="all"))
-    expect_warning(ivBartik(d_sh_empl ~ 1 | shock, W=ADH$W,
+    expect_warning(ivreg_ss(d_sh_empl ~ 1 | shock, W=ADH$W,
                               X=IV, data=ADH$reg, method="all"))
-    expect_warning(lmBartik(d_sh_empl ~ 1, W=ADH$W, X=IV,
+    expect_warning(reg_ss(d_sh_empl ~ 1, W=ADH$W, X=IV,
                             data=ADH$reg, method="region_cluster"))
-    expect_warning(ivBartik(d_sh_empl ~ 1 | shock, W=ADH$W,
+    expect_warning(ivreg_ss(d_sh_empl ~ 1 | shock, W=ADH$W,
                               X=IV, data=ADH$reg, method="region_cluster"))
 })
