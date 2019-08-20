@@ -1,15 +1,19 @@
 ---
-title: "Inference in Shift-Share Designs"
-author: "Michal Kolesár"
-date: "`r Sys.Date()`"
-
-bibliography: bartik_library.bib
 output:
   pdf_document:
+    citation_package: natbib
+    latex_engine: pdflatex
     toc: false
-    toc_depth: 2
+    keep_tex: true
+title: "Robust Standard Errors in Small Samples "
+author: "Michal Kolesár"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+bibliography: library.bib
+fontsize: 11pt
 vignette: >
-  %\VignetteIndexEntry{Inference in Shift Share Designs}
+  %\VignetteIndexEntry{ShiftShareSE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
