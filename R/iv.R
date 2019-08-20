@@ -14,6 +14,10 @@
 #' Development Policies?, Kalamazoo, MI: W.E. Upjohn Institute for Employment
 #' Research, 1991.}
 #'
+#' \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
+#' "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
+#' 2019, forthcoming. doi:10.1093/qje/qjz025}
+#'
 #' }
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)
@@ -53,7 +57,6 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 
     ret <- ivreg_ss.fit(y1, y2, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
                         sector_cvar)
-
     ret$call <- cl
     ret$terms <- mt
     ret

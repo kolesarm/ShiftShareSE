@@ -15,6 +15,10 @@
 #' Development Policies?, Kalamazoo, MI: W.E. Upjohn Institute for Employment
 #' Research, 1991.}
 #'
+#' \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
+#' "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
+#' 2019, forthcoming. doi:10.1093/qje/qjz025}
+#'
 #' }
 #' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013)

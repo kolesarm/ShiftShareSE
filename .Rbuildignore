@@ -7,3 +7,4 @@
 ^data-raw/*$
 readme.md
 .lintr
+^cran-comments\.md$

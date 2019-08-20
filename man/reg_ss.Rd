@@ -91,5 +91,9 @@ reg_ss(d_sh_empl ~ 1, X=IV, data=ADH$reg, W=ADH$W,
 Development Policies?, Kalamazoo, MI: W.E. Upjohn Institute for Employment
 Research, 1991.}
 
+\cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
+"Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
+2019, forthcoming. doi:10.1093/qje/qjz025}
+
 }
 }

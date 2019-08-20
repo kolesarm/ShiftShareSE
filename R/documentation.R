@@ -56,7 +56,8 @@
 #' American Economic Review, 2013, 103 (6), 2121–68.}
 #'
 #' \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
-#' "Shift-Share Designs: Theory and Inference", 2018, arXiv:1806.07928}
+#' "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
+#' 2019, forthcoming. doi:10.1093/qje/qjz025}
 #'
 #' }
 "ADH"
