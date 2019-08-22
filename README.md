@@ -1,4 +1,4 @@
-[![Travis build status](https://travis-ci.org/kolesarm/ShiftShareSE.svg?branch=master)](https://travis-ci.org/kolesarm/ShiftShareSE) [![Coverage status](https://codecov.io/gh/kolesarm/ShiftShareSE/branch/master/graph/badge.svg)](https://codecov.io/github/kolesarm/ShiftShareSE?branch=master)
+[![Travis build status](https://travis-ci.org/kolesarm/ShiftShareSE.svg?branch=master)](https://travis-ci.org/kolesarm/ShiftShareSE) [![Coverage status](https://codecov.io/gh/kolesarm/ShiftShareSE/branch/master/graph/badge.svg)](https://codecov.io/github/kolesarm/ShiftShareSE?branch=master) [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE)
 
 # ShiftShareSE
 
@@ -37,4 +37,11 @@ You can install the released version of dfadjust from
 
 ``` r
 install.packages("ShiftShareSE")
+```
+
+Alternatively, you can get the current the development version from GitHub:
+
+``` r
+install.packages("remotes") # if not installed
+remotes::install_github("ShiftShareSE")
 ```

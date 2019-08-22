@@ -248,5 +248,17 @@ test_that("Print warning if region_cvar not supplied", {
     expect_warning(reg_ss(d_sh_empl ~ 1, W=ADH$W, X=IV,
                             data=ADH$reg, method="region_cluster"))
     expect_warning(ivreg_ss(d_sh_empl ~ 1 | shock, W=ADH$W,
-                              X=IV, data=ADH$reg, method="region_cluster"))
+                            X=IV, data=ADH$reg, method="region_cluster"))
+
+    ## collinear share matrix
+    ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
+          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
+          division"
+    W <- ADH$W
+    W <- cbind(W, W[, 1])
+    expect_error(reg_ss(d_sh_empl ~ 1, W=W, X=IV, data=ADH$reg, method="all"))
+    expect_error(ivreg_ss(d_sh_empl ~ 1 | shock, W=W,
+                          X=IV, data=ADH$reg, method="region_cluster"))
+
+
 })

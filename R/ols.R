@@ -8,6 +8,7 @@
 #' @template formula
 #' @template shocks
 #' @template method
+#' @template value
 #' @inheritParams reg_ss.fit
 #' @references{
 #'
@@ -66,6 +67,7 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     to regions.
 #' @template shocks
 #' @template method
+#' @template value
 #' @param w vector of weights (length \code{N}) to be used in the fitting
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
@@ -80,20 +82,23 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
 
+    if (qr(W)$rank < ncol(W))
+        stop("Share matrix is collinear")
+
     if("all" %in% method)
         method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
-
-    W0 <- W
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
         ddY <- stats::lm.fit(y=y, x=Z)$residuals # \ddot{Y}
-        hX <- stats::lm.fit(y=ddX, x=W0)$coefficients #  \hat{\Xs}
+        hX <- stats::lm.fit(y=ddX, x=W)$coefficients #  \hat{\Xs}
     } else {
         ddX <- stats::lm.wfit(y=X, x=Z, w=w)$residuals
         ddY <- stats::lm.wfit(y=y, x=Z, w=w)$residuals
-        hX <- stats::lm.wfit(y=ddX, x=W0, w=w)$coefficients
+        hX <- stats::lm.wfit(y=ddX, x=W, w=w)$coefficients
     }
+
+
 
     wgt <- if (is.null(w)) 1 else w
     RX <- sum(wgt * ddX^2)

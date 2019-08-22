@@ -7,6 +7,7 @@
 #' @template formulaiv
 #' @template shocks
 #' @template method
+#' @template value
 #' @inheritParams ivreg_ss.fit
 #' @references{
 #'
@@ -74,6 +75,7 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' @param Z Matrix of regional controls, matrix with \code{N} rows
 #' @template shocks
 #' @template method
+#' @template value
 #' @param w vector of weights (length \code{N}) to be used in the fitting
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
@@ -92,18 +94,20 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
 
-    W0 <- W
+    if (qr(W)$rank < ncol(W))
+        stop("Share matrix is collinear")
+
 
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
         ddY1 <- stats::lm.fit(y=y1, x=Z)$residuals # \ddot{Y}_{1}
         ddY2 <- stats::lm.fit(y=y2, x=Z)$residuals # \ddot{Y}_{2}
-        hX <- stats::lm.fit(y=ddX, x=W0)$coefficients #  \hat{\Xs}
+        hX <- stats::lm.fit(y=ddX, x=W)$coefficients #  \hat{\Xs}
     } else {
         ddX <- stats::lm.wfit(y=X, x=Z, w=w)$residuals
         ddY1 <- stats::lm.wfit(y=y1, x=Z, w=w)$residuals
         ddY2 <- stats::lm.wfit(y=y2, x=Z, w=w)$residuals
-        hX <- stats::lm.wfit(y=ddX, x=W0, w=w)$coefficients
+        hX <- stats::lm.wfit(y=ddX, x=W, w=w)$coefficients
     }
 
     wgt <- if (!is.null(w)) w else 1
