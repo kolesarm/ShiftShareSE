@@ -1,16 +1,14 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* For all exported functions: added `\value` explaining the functions' results
-* In `ivreg_ss.fit` and `reg_ss.fit`: added check for collinearity of one of the
-  function inputs (share matrix `W`), and added a unit test to check this works
-  properly.
+* Updated the description, dropping single quotes: "'AKM' and 'AKM0' methods" ->
+  "AKM and AKM0 methods" since these are not function names
 
 
 ## Test environments
 * local Debian 10 ("buster") install, R 3.6.1
-* Ubuntu 16.04.6 (on travis-ci), R 3.6.1
-* win-builder (devel)
+* Ubuntu 16.04.6 (on travis-ci), R-devel and release
+* win-builder,  R-devel and release
 * Rhub, Ubuntu Linux 16.04 LTS, R-release
 
 ## R CMD check results
