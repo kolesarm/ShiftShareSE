@@ -5,7 +5,8 @@
 This package implements confidence intervals in shift-share designs (also called
 [Bartik (1991)](http://research.upjohn.org/up_press/77/) designs) using the
 `AKM` and `AKM0` procedures from [Adão, Kolesár, and Morales
-(2019)](https://doi.org/10.1093/qje/qjz025). See the
+(2019)](https://doi.org/10.1093/qje/qjz025). The released version is available
+at [CRAN](https://CRAN.R-project.org/package=ShiftShareSE). See the
 [ShiftShareSEMatlab](https://github.com/kolesarm/ShiftShareSEMatlab) package for
 `Matlab` version of this code.
 
@@ -33,7 +34,7 @@ reg_ss(shock ~ 1, X=IV, data=ADH$reg, W=ADH$W,
 ## Installation
 
 You can install the released version of dfadjust from
-[CRAN](https://CRAN.R-project.org) with:
+[CRAN](https://CRAN.R-project.org/package=ShiftShareSE) with:
 
 ``` r
 install.packages("ShiftShareSE")
