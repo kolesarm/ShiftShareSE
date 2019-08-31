@@ -140,6 +140,9 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
         cR0 <- hX*drop(crossprod(wgt * (ddY1-ddY2*beta0), W))
         cW <- hX*drop(crossprod(wgt * ddY2, W))
         if (!is.null(sector_cvar)) {
+            if (length(sector_cvar) != length(cR))
+                stop("The length of \"sector_cvar\" is different",
+                        "from the number of sectors.")
             cR <- tapply(cR, factor(sector_cvar), sum)
             cR0 <- tapply(cR0, factor(sector_cvar), sum)
             cW <- tapply(cW, factor(sector_cvar), sum)

@@ -47,7 +47,6 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 
     Z <- if (stats::is.empty.model(mt)) NULL
          else stats::model.matrix(mt, mf, contrasts=NULL)
-
     ret <- reg_ss.fit(y, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
                         sector_cvar)
 
@@ -129,6 +128,9 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         cR0 <- hX*drop(crossprod(wgt * (ddY-ddX*beta0), W))
         cW <- hX*drop(crossprod(wgt * ddX, W))
         if (!is.null(sector_cvar)) {
+            if (length(sector_cvar) != length(cR))
+                stop("The length of \"sector_cvar\" is different",
+                        "from the number of sectors.")
             cR <- tapply(cR, factor(sector_cvar), sum)
             cR0 <- tapply(cR0, factor(sector_cvar), sum)
             cW <- tapply(cW, factor(sector_cvar), sum)
