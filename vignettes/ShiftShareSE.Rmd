@@ -40,6 +40,8 @@ first element of the list, `ADH$reg` is a data-frame with regional variables,
 the second element, `ADH$sic` is a vector of SIC codes for the sectors, and
 `ADH$W` is a matrix of shares. See `?ADH` for a description of the dataset.
 
+# Examples
+
 We now replicate column (1) of Table V in @akm18. First we load the package,
 define the vector of controls, and define a vector of 3-digit SIC codes:
 ```{r}
@@ -75,5 +77,24 @@ ivreg_ss(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
                   X=IV, data=ADH$reg, region_cvar=statefip,
                   weights=weights, sector_cvar=sic, method="all")
 ```
+
+## Note on collinear sectors
+
+Let $W$ denote the share matrix with the $(i,s)$ element given by $w_{is}$.
+Supppose that columns of $W$ are collinear, so it that it has rank $S_{0}<S$.
+Without loss of generality, suppose that the first $S_0$ columns of the matrix
+are full rank, so that the collinearity is caused by the last $S-S_0$ sectors.
+In this case, it is not possible to recover, $\tilde{X}_s$, the sectoral
+shifters with the controls partialled out, and the `reg_ss` and `ivreg_ss`
+functions will return an error message `"Share matrix is collinear"`. The
+researcher can either (i) drop the collinear sectors, defining
+$X_i=\sum_{s=1}^{S_0}w_{is}X_{s}$, (ii) aggregate the sectors, or (iii) if the
+only controls are those with shift-share structure, and we have data on $Z_{s}$,
+we can estimate $\tilde{X}_{s}$ by running a sector-level regression of $X_s$
+onto $Z_s$, and taking the residual. This third option is not currently
+implemented in this package. Note that options (i) and (ii) change the
+definition of the estimand. Since they involve changing the shock vector
+$X_{i}$, this has to be done before using the `reg_ss` and `ivreg_ss` functions.
+
 
 # References

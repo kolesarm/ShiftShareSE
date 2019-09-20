@@ -2,13 +2,15 @@
 
 # ShiftShareSE
 
-This package implements confidence intervals in shift-share designs (also called
+This R package implements confidence intervals in shift-share designs (also called
 [Bartik (1991)](http://research.upjohn.org/up_press/77/) designs) using the
 `AKM` and `AKM0` procedures from [Adão, Kolesár, and Morales
 (2019)](https://doi.org/10.1093/qje/qjz025). The released version is available
 at [CRAN](https://CRAN.R-project.org/package=ShiftShareSE). See the
 [ShiftShareSEMatlab](https://github.com/kolesarm/ShiftShareSEMatlab) package for
-`Matlab` version of this code.
+Matlab version of this code, and the
+[ShiftShareSEStata](https://github.com/zhangxiang0822/ShiftShareSEStata) package
+for a Stata version.
 
 See vignette [ShiftShareSE](doc/ShiftShareSE.pdf) for description of the package
 (available through `vignette("ShiftShareSE")` once package is installed), and the

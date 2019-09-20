@@ -253,7 +253,8 @@ test_that("Print warning if region_cvar not supplied", {
 
     ## Try to cluster on the wrong thing
     expect_error(reg_ss(d_sh_empl ~ 1, W=ADH$W, X=IV, data=ADH$reg,
-                          method=c("akm", "akm0"), sector_cvar=ADH$reg$statefip))
+                        method=c("akm", "akm0"),
+                        sector_cvar=ADH$reg$statefip))
     expect_error(ivreg_ss(d_sh_empl ~ 1 | shock, W=ADH$W,
                           X=IV, data=ADH$reg, method="akm",
                           sector_cvar=ADH$reg$statefip))
