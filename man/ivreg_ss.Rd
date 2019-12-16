@@ -4,8 +4,19 @@
 \alias{ivreg_ss}
 \title{Inference in an IV regression with a shift-share instrument}
 \usage{
-ivreg_ss(formula, X, data, W, subset, weights, method, beta0 = 0,
-  alpha = 0.05, region_cvar = NULL, sector_cvar = NULL)
+ivreg_ss(
+  formula,
+  X,
+  data,
+  W,
+  subset,
+  weights,
+  method,
+  beta0 = 0,
+  alpha = 0.05,
+  region_cvar = NULL,
+  sector_cvar = NULL
+)
 }
 \arguments{
 \item{formula}{object of class \code{"formula"} (or one that can be coerced
@@ -113,7 +124,7 @@ Research, 1991.}
 
 \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
 "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
-2019, forthcoming. doi:10.1093/qje/qjz025}
+2019, 134 (4), 1949-2010.}
 
 }
 }

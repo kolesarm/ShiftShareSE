@@ -31,7 +31,7 @@ Suggests:
     spelling,
     formatR
 Imports: Formula
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 URL: https://github.com/kolesarm/ShiftShareSE
 Language: en-US
 BugReports: https://github.com/kolesarm/ShiftShareSE/issues

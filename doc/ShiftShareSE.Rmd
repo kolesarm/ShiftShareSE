@@ -46,8 +46,7 @@ We now replicate column (1) of Table V in @akm18. First we load the package,
 define the vector of controls, and define a vector of 3-digit SIC codes:
 ```{r}
 library("ShiftShareSE")
-ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c + l_sh_popfborn +
-          l_sh_empl_f + l_sh_routine33 + l_task_outsource + division"
+ctrls <- paste("t2 + l_shind_manuf_cbp + l_sh_popedu_c +", "l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource", "+ division")
 sic <- floor(ADH$sic/10)
 ```
 

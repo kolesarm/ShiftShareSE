@@ -4,8 +4,19 @@
 \alias{ivreg_ss.fit}
 \title{Inference in an IV regression with a shift-share instrument}
 \usage{
-ivreg_ss.fit(y1, y2, X, W, Z, w = NULL, method = c("akm", "akm0"),
-  beta0 = 0, alpha = 0.05, region_cvar = NULL, sector_cvar = NULL)
+ivreg_ss.fit(
+  y1,
+  y2,
+  X,
+  W,
+  Z,
+  w = NULL,
+  method = c("akm", "akm0"),
+  beta0 = 0,
+  alpha = 0.05,
+  region_cvar = NULL,
+  sector_cvar = NULL
+)
 }
 \arguments{
 \item{y1}{Outcome variable, vector of length \code{N}}

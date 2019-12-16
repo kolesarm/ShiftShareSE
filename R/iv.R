@@ -8,7 +8,6 @@
 #' @template shocks
 #' @template method
 #' @template value
-#' @inheritParams ivreg_ss.fit
 #' @references{
 #'
 #' \cite{Bartik, Timothy J., Who Benefits from State and Local Economic
@@ -17,7 +16,7 @@
 #'
 #' \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
 #' "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
-#' 2019, forthcoming. doi:10.1093/qje/qjz025}
+#' 2019, 134 (4), 1949-2010.}
 #'
 #' }
 #' @examples
