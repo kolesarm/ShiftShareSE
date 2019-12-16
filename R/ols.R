@@ -171,7 +171,7 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     p <- 2*(1-stats::pnorm(abs(betahat-beta0)/c(se[-5], se0.akm0)))
     ci.l <- c(betahat-cv*se[-5], cil.akm0)
     ci.r <- c(betahat+cv*se[-5], cir.akm0)
-    se <- c(se, se.akm0)
+
     names(se) <- names(ci.l) <- names(ci.r) <- names(p) <-
         c("Homoscedastic", "EHW", "Reg. cluster", "AKM", "AKM0")
 

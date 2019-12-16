@@ -1,4 +1,3 @@
-
 context("Check standard error formulas")
 
 test_that("Homoscedastic and EHW standard errors on ADH data", {
