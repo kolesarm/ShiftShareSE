@@ -11,7 +11,8 @@
 #' to the effective standard error (length of the confidence interval divided by
 #' \code{2*stats::qnorm(1-alpha/2)})}
 #'
-#' \item{ci.l, ci.r}{Upper and lower enpoints of the confidence interval for the
-#' effect of interest \eqn{\beta}{beta}, for each of the methods in \code{method}}
+#' \item{ci.l, ci.r}{Upper and lower endpoints of the confidence interval for
+#' the effect of interest \eqn{\beta}{beta}, for each of the methods in
+#' \code{method}}
 #'
 #' }

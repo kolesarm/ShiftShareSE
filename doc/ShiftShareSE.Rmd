@@ -5,7 +5,7 @@ output:
     latex_engine: pdflatex
     toc: false
     keep_tex: true
-title: "Robust Standard Errors in Small Samples "
+title: "Standard Errors in Shift-Share Regressions"
 author: "Michal Kolesár"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in

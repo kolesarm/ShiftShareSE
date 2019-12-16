@@ -35,14 +35,14 @@ reg_ss(shock ~ 1, X=IV, data=ADH$reg, W=ADH$W,
 
 ## Installation
 
-You can install the released version of dfadjust from
+You can install the released version of `ShiftShareSE` from
 [CRAN](https://CRAN.R-project.org/package=ShiftShareSE) with:
 
 ``` r
 install.packages("ShiftShareSE")
 ```
 
-Alternatively, you can get the current the development version from GitHub:
+Alternatively, you can get the current development version from GitHub:
 
 ``` r
 install.packages("remotes") # if not installed
