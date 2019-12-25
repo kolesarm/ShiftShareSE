@@ -1,6 +1,6 @@
 Package: ShiftShareSE
 Title: Inference in Regressions with Shift-Share Structure
-Version: 1.0.0.9001
+Version: 1.0.1
 Authors@R: c(person(given = "Michal",
                   family = "Kolesár",
                   role = c("aut", "cre"),

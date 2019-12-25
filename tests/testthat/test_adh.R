@@ -6,9 +6,11 @@ test_that("Point estimates match Table 3", {
 
     ## list d_sh_empl d_sh_empl_mfg d_sh_empl_nmfg d_tradeusch_pw
     ## d_tradeotch_pw_lag timepwt48 in 1/5
+    ## Also, increase precision in some entries of
+    ## AHD13 to handle better rounding in R4.0.0
     ADH13 <- rbind(c(.1587391, -3.8059785, 3.964716, 5.293786, 2.278828,
                      .0021135),
-                   c(2.535355, -.681448, 3.216803, 3.030479, 2.797735,
+                   c(2.535355, -.681448, 3.216803, 3.030479, 2.7977347,
                      .0007317),
                    c(-3.124082, -2.1658, -.9582818, 2.062596, .7209086,
                      .0002608))

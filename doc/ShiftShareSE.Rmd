@@ -80,7 +80,7 @@ ivreg_ss(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
 ## Note on collinear sectors
 
 Let $W$ denote the share matrix with the $(i,s)$ element given by $w_{is}$.
-Supppose that columns of $W$ are collinear, so it that it has rank $S_{0}<S$.
+Suppose that columns of $W$ are collinear, so it that it has rank $S_{0}<S$.
 Without loss of generality, suppose that the first $S_0$ columns of the matrix
 are full rank, so that the collinearity is caused by the last $S-S_0$ sectors.
 In this case, it is not possible to recover, $\tilde{X}_s$, the sectoral
