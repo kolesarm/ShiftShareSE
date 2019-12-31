@@ -69,9 +69,12 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' Basic computing engine to calculate confidence intervals and p-values in an
 #' instrumental variables regression with a shift-share instrument, using
 #' different inference methods, as specified by \code{method}.
-#' @param y1 Outcome variable, vector of length \code{N}
-#' @param y2 Endogenous variable, vector of length \code{N}
-#' @param Z Matrix of regional controls, matrix with \code{N} rows
+#' @param y1 Outcome variable. A vector of length \code{N}, with each row
+#'     corresponding to a region.
+#' @param y2 Endogenous variable, vector of length \code{N}, with each row
+#'     corresponding to a region.
+#' @param Z Matrix of regional controls, matrix with \code{N} rows corresponding
+#'     to regions.
 #' @template shocks
 #' @template method
 #' @template value

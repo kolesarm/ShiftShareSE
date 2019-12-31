@@ -60,7 +60,8 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' Basic computing engine to calculate confidence intervals and p-values in
 #' shift-share designs using different inference methods, as specified by
 #' \code{method}.
-#' @param y Outcome variable, vector of length \code{N}
+#' @param y Outcome variable, vector of length \code{N}, with each row
+#'     corresponding to a region.
 #' @param Z Matrix of regional controls, matrix with \code{N} rows corresponding
 #'     to regions.
 #' @template shocks
