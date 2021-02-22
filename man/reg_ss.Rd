@@ -29,11 +29,10 @@ aggregated to regional level using the share matrix \code{W}. That is,
 each element of \code{X} corresponds to a region.}
 
 \item{data}{optional data frame, list or environment (or object coercible by
-\code{as.data.frame} to a data frame) containing the outcome and running
-variables in the model. If not found in \code{data}, the variables are
-taken from \code{environment(formula)}, typically the environment from
-which the function is called. Each row in the data frame corresponds to a
-region.}
+\code{as.data.frame} to a data frame) containing the variables in the
+model. If not found in \code{data}, the variables are taken from
+\code{environment(formula)}, typically the environment from which the
+function is called. Each row in the data frame corresponds to a region.}
 
 \item{W}{A matrix of sector shares, so that \code{W[i, s]} corresponds to
 share of sector \code{s} in region \code{i}. The ordering of the regions
@@ -132,7 +131,7 @@ Research, 1991.}
 
 \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
 "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
-2019, 134 (4), 1949-2010.}
+2019, 134 (4), 1949-2010. \doi{10.1093/qje/qjz025}.}
 
 }
 }

@@ -132,7 +132,7 @@ Research, 1991.}
 
 \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
 "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
-2019, 134 (4), 1949-2010.}
+2019, 134 (4), 1949-2010. \doi{10.1093/qje/qjz025}.}
 
 }
 }

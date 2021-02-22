@@ -4,7 +4,8 @@
 \name{ADH}
 \alias{ADH}
 \title{Dataset from Autor, Dorn and Hanson (2013)}
-\format{A list, consisting of a data frame, a vector, and a matrix. The first
+\format{
+A list, consisting of a data frame, a vector, and a matrix. The first
     data frame, \code{ADH$reg}, has 1,444 rows and 16 variables. The rows
     correspond to 722 commuting zones (CZ) over 2 time periods (1990-1999 and
     2000-2007), and the variables are as follows:
@@ -45,7 +46,8 @@ The second list component, the vector \code{ADH$sic} is a vector of length
 770 that gives 4-digit SIC industry codes for the sectors used to construct
 the shift-share IV \code{ADH$reg$IV}. Finally, \code{ADH$W} is a 1444-by-700
 matrix of shares that correspond to the CZ employment shares in 4-digit SIC
-sectors.}
+sectors.
+}
 \source{
 We thank David Dorn for helping us with the construction of the share
     matrix. The remaining data was obtained from David Dorn's website,
@@ -63,11 +65,12 @@ illustrate the confidence intervals implemented in this package.
 
 \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:
 Local labor market effects of import competition in the United States,"
-American Economic Review, 2013, 103 (6), 2121–2168.}
+American Economic Review, 2013, 103 (6), 2121–2168.
+\doi{10.1257/aer.103.6.2121}.}
 
 \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
 "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
-2019, 134 (4), 1949-2010.}
+2019, 134 (4), 1949-2010. \doi{10.1093/qje/qjz025}.}
 
 }
 }

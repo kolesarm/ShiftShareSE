@@ -53,11 +53,12 @@
 #'
 #' \cite{Autor, David H., David Dorn, and Gordon H. Hanson, "The China syndrome:
 #' Local labor market effects of import competition in the United States,"
-#' American Economic Review, 2013, 103 (6), 2121–2168.}
+#' American Economic Review, 2013, 103 (6), 2121–2168.
+#' \doi{10.1257/aer.103.6.2121}.}
 #'
 #' \cite{Adão, Rodrigo, Kolesár, Michal, and Morales, Eduardo,
 #' "Shift-Share Designs: Theory and Inference", Quarterly Journal of Economics
-#' 2019, 134 (4), 1949-2010.}
+#' 2019, 134 (4), 1949-2010. \doi{10.1093/qje/qjz025}.}
 #'
 #' }
 "ADH"
