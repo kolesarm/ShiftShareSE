@@ -74,7 +74,8 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          remotes::install_cran("formatR")
+          # Install knitr because Ubuntu-release is not finding it for some reason
+          remotes::install_cran("formatR", "knitr")
         shell: Rscript {0}
 
       - name: Check
