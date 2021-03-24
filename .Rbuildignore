@@ -9,3 +9,4 @@ readme.md
 .lintr
 ^cran-comments\.md$
 ^CRAN-RELEASE$
+^\.github$
