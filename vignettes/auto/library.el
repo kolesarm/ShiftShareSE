@@ -4,6 +4,7 @@
    (LaTeX-add-bibitems
     "adh13"
     "akm18"
-    "bartik91"))
+    "bartik91"
+    "ass19"))
  :bibtex)
 

@@ -3,8 +3,11 @@ output:
   pdf_document:
     citation_package: natbib
     latex_engine: pdflatex
-    toc: false
+    toc: true
+    number_sections: true
     keep_tex: true
+    includes:
+      in_header: "preamble.tex"
 title: "Standard Errors in Shift-Share Regressions"
 author: "Michal Kolesár"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
@@ -18,6 +21,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r, include=FALSE, cache=FALSE}
 library("knitr")
 knitr::opts_knit$set(self.contained = FALSE)
@@ -25,12 +29,14 @@ knitr::opts_chunk$set(tidy = TRUE, collapse=TRUE, comment = "#>",
                       tidy.opts=list(blank=FALSE, width.cutoff=55))
 ```
 
+# Summary
+
 The package `ShiftShareSE` implements confidence intervals proposed by @akm18 for
 inference in shift-share least squares and instrumental variables regressions,
 in which the regressor of interest (or the instrument) has a shift-share
 structure, as in @bartik91. A shift-share variable has the structure
-$X_{i}=\sum_{s=1}^{S}w_{is}{X}_{s}$, where $i$ indexes regions, $s$
-indexes sectors, ${X}_{s}$ are sectoral shifters (or shocks), and
+$X_{i}=\sum_{s=1}^{S}w_{is}\Xs_{s}$, where $i$ indexes regions, $s$
+indexes sectors, $\Xs_{s}$ are sectoral shifters (or shocks), and
 $w_{is}$ are shares, such as initial share of region $i$'s employment in sector
 $s$.
 
@@ -77,23 +83,233 @@ ivreg_ss(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
                   weights=weights, sector_cvar=sic, method="all")
 ```
 
-## Note on collinear sectors
+# Note on collinear sectors
 
 Let $W$ denote the share matrix with the $(i,s)$ element given by $w_{is}$.
 Suppose that columns of $W$ are collinear, so it that it has rank $S_{0}<S$.
 Without loss of generality, suppose that the first $S_0$ columns of the matrix
 are full rank, so that the collinearity is caused by the last $S-S_0$ sectors.
-In this case, it is not possible to recover, $\tilde{X}_s$, the sectoral
+In this case, it is not possible to recover, $\tilde{\Xs}_s$, the sectoral
 shifters with the controls partialled out, and the `reg_ss` and `ivreg_ss`
 functions will return an error message `"Share matrix is collinear"`. The
 researcher can either (i) drop the collinear sectors, defining
-$X_i=\sum_{s=1}^{S_0}w_{is}X_{s}$, (ii) aggregate the sectors, or (iii) if the
-only controls are those with shift-share structure, and we have data on $Z_{s}$,
-we can estimate $\tilde{X}_{s}$ by running a sector-level regression of $X_s$
-onto $Z_s$, and taking the residual. This third option is not currently
+$X_i=\sum_{s=1}^{S_0}w_{is}\Xs_{s}$, (ii) aggregate the sectors, or (iii) if the
+only controls are those with shift-share structure, and we have data on $\Zs_{s}$,
+we can estimate $\tilde{\Xs}_{s}$ by running a sector-level regression of $\Xs_s$
+onto $\Zs_s$, and taking the residual. This third option is not currently
 implemented in this package. Note that options (i) and (ii) change the
 definition of the estimand. Since they involve changing the shock vector
-$X_{i}$, this has to be done before using the `reg_ss` and `ivreg_ss` functions.
+$X$, this has to be done before using the `reg_ss` and `ivreg_ss` functions.
+
+# Extensions to multiple shifters and multiple endogenous variables
+
+We now discuss how the methods in @akm18 extend to the case where there are
+multiple shifters, or, in the case of an IV regression, multiple endogenous
+variables. Currently, these extensions are not implemented in the package.
+
+## OLS
+\label{least_squares}
+
+Suppose that we're interested in the effect of a $k$-vector of shift-share
+regressors, $X_i=\sum_{s}w_{is}\Xs_{s}$, where $\Xs_{s}$ is a vector
+of length $k$. For inference on the coefficient on the $j$th element of
+$X_{i}$, we proceed as if this was the only shift-share regressor, treating the
+remaining shifters as part of the controls.
+
+## IV with a single endogenous regressor and multiple shift-share instruments
+\label{instruments}
+
+Now suppose that the $k$-vector $X_i$ defined in section \ref{least_squares} is a
+$k$-vector of instruments. Let $X$ denote the $\N\times k$ matrix with rows
+given by $X_i'$. Consider the setup in Section IV.C of @akm18, with the
+first-stage coefficients $\beta_{is}$ in eq. (31) now a $k$-vector, and $\alpha$
+being the scalar treatment effect of $Y_{2}$ on $Y_{1}$ as in eq. (30). Letting
+$\ddot{X}=X-Z(Z' Z)^{-1}Z' X$ denote the $\N\times k$ matrix of instruments with
+the covariates partialled out, the two-stage least squares estimator is given by
+\begin{equation*}
+\hat{\alpha}=\frac{{Y}_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{1}}{
+{Y}_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2}}=\frac{\hat{\beta}'\ddot{X}'Y_{1}}{
+\hat{\beta}'\ddot{X}'\ddot{X}\hat{\beta}, }
+\end{equation*}
+where
+$\hat{\beta}=(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2}$ is a $k$-vector of
+first-stage coefficients.
+
+Thus,
+\begin{equation*}
+  \hat{\alpha}-\alpha=\frac{{Y}_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{1}(0)}{
+    {Y}_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2}}.
+\end{equation*}
+
+Now, letting $Y_{1}(0)=Z'\delta+\epsilon$, we have, as in the proof of
+Proposition 4 in the paper,
+\begin{equation*}
+  r_{\N}^{1/2}\ddot{X}'Y_{1}(0)=
+  r_{\N}^{1/2}{X}'(I-Z(Z' Z)^{-1}Z)\epsilon=r_{\N}^{1/2}\tilde{\Xs}'W'\epsilon+o_{p}(1).
+\end{equation*}
+Thus, using arguments in Proposition 4 in the paper, we obtain the infeasible
+standard error formula
+\begin{equation*}
+  \se(\hat{\alpha})=  \frac{
+    \sqrt{\sum_{s}(\hat{\beta}'\tilde{\Xs}_{s})^{2}R_{s}^{2}}
+  }{\hat{\beta}'\ddot{X}'\ddot{X}\hat{\beta}},\qquad R_{s}=\sum_{i}w_{is}\epsilon_{i},
+\end{equation*}
+where $\tilde{\Xs}_{s}$ is a (vector) residual from the population regression of
+the vector $\Xs_{s}$ onto the controls.
+
+This suggests the feasible standard
+error formula
+\begin{equation*}
+  \widehat{\se}(\hat{\alpha})=  \frac{
+    \sqrt{\sum_{s}(\hat{\beta}'\widehat{\Xs}_{s})^{2}\hat{R}_{s}^{2}}
+  }{\hat{\beta}'\ddot{X}'\ddot{X}\hat{\beta}},\qquad \hat{R}_{s}=\sum_{i}w_{is}\hat{\epsilon}_{i},
+\end{equation*}
+where $\widehat{\Xs}=(W' W)^{-1}W'\ddot{X}$ are the regression coefficients from
+the regression of $\ddot{X}$ onto $W$ (as in Remark 6, except now a
+$\widehat{\Xs}$ is an $S\times k$ matrix), and $\hat{\epsilon}_{i}$ are
+estimates of structural residual. For AKM,
+$\hat{\epsilon}=Y_{1}-Y_{2}\hat{\alpha}-Z(Z' Z)^{-1}Z'(Y_{1}-Y_{2}\hat{\alpha})$.
+
+For AKM0, the construction is more complicated. Let
+$\hat{\gamma}=(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{1}$ denote the reduced-form
+coefficient. Let $\hat{R}_{s,\alpha_{0}}=\sum_{i}w_{is}\hat{\epsilon}_{\alpha_{0}}$, where
+$\hat{\epsilon}_{\alpha_{0}}=(I-Z(Z' Z)^{-1}Z')(Y_{1}-Y_{2}\alpha_{0})$. Then
+\begin{equation*}
+  Q(\alpha_{0})=  (\hat{\gamma}-\hat{\beta}\alpha_{0})'
+  (\ddot{X}'\ddot{X})\left(\sum_{s}\widehat{\Xs}_{s}
+    \widehat{\Xs}_{s}'\hat{R}_{s,\alpha_{0}}^{2}\right)^{-1}
+  (\ddot{X}'\ddot{X})
+  (\hat{\gamma}-\hat{\beta}\alpha_{0})
+\end{equation*}
+will be distributed $\chi^{2}_{k}$ in large samples, because
+$(\ddot{X}'\ddot{X})^{-1}\sum_{s}\widehat{\Xs}_{s}
+\widehat{\Xs}_{s}'\hat{R}_{s,\alpha_{0}}^{2} (\ddot{X}'\ddot{X})^{-1}$
+consistently estimates the asymptotic variance of
+$\hat{\gamma}-\hat{\beta}\alpha_{0}$ under the null. Therefore, we reject the
+null $H_{0}\colon\alpha=\alpha_{0}$ if $Q(\alpha_{0})>\chi^{2}_{k, 1-\alpha}$,
+where $\chi^{2}_{k, 1-\alpha}$ is the $1-\alpha$ quantile of a $\chi^{2}_{k}$. A
+confidence set is collected by all nulls that are not rejected,
+\begin{equation*}
+\text{AKM0 confidence set}=  \{\alpha\in\mathbb{R}\colon
+  Q(\alpha)\leq \chi^{2}_{k,1-\alpha}
+  \},
+\end{equation*}
+Note that (i) unlike the case with a single instrument (Remark 6, step (iv)),
+there is not a closed form solution to the confidence set anymore: one needs to
+do a grid search over the real line, collecting all values of $\alpha$ for which
+the test doesn't reject, and (ii) the confidence set will be valid even if the
+instruments are weak; however, if the instruments are strong, the AKM0 test is
+less powerful than the AKM test, and consequently the AKM0 confidence set will
+tend to be bigger than the AKM confidence interval.
+
+Not that properties (i) and (ii) are inherited from the properties of the
+heteroskedasticity-robust version of the Anderson-Rubin test when there is more
+than one instrument (see, for example, Section 5.1 in @ass19 for a
+discussion). The AKM0 method adapts this test to the current setting
+with shift-share instruments, inheriting these properties.
+
+If we do not require validity under weak instruments, we can also use a
+different version of AKM0, namely computing the confidence set as
+\begin{equation*}
+  \text{Alternative AKM0 confidence set}=  \left\{\alpha\in\mathbb{R}\colon
+  \frac{(\hat{\alpha}-\alpha)^{2}}{
+    \frac{
+      \sum_{s}(\hat{\beta}'\widehat{\Xs}_{s})^{2}\hat{R}_{s,\alpha}^{2}
+    }{(\hat{\beta}'\ddot{X}'\ddot{X}\hat{\beta})^{2}}}  \leq z_{1-\alpha/2}^{2}
+  \right\}.
+\end{equation*}
+This form of the confidence can be thought of as the analog to the Lagrange
+multiplier confidence set in likelihood models, rather than the analog of the
+Anderson-Rubin test. In the case with a single instrument, these concepts
+coincide, but they are different in general. In this case, the inequality
+defining the set is just a quadratic inequality in $\alpha$, and we can solve it
+explicitly as in Remark 6 in the paper to obtain a closed-form solution. If the
+instruments are strong, it will take the form of an interval.
+
+## IV with multiple endogenous variables
+
+Consider a general setup with eqs. (30) and (31) in the paper replaced by
+\begin{equation*}
+  Y_{1i}(y_{2})=Y_{1i}(0)+y_{2}'\alpha\qquad Y_{2i}(\xs_{1},\dotsc,\xs_{S})=
+  Y_{2i}(0)+\sum_{s}w_{is}B_{is}'\xs_{s}
+\end{equation*}
+with $\Xs$ and $Y_{2}$ now both vectors, and $B_{is}$ has dimensions
+$\dim(\Xs)\times \dim(Y_{2})$. If $\Xs=Y_{2}$, the setup reduces to that
+in section \ref{least_squares}. If $Y_{2}$ is scalar, the setup reduces to that in
+section \ref{instruments}. The two-stage least squares estimator of $\alpha$ is given by
+\begin{equation*}
+  \hat{\alpha}=(Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2})^{-1}Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{1}.
+\end{equation*}
+With scalar $X_{i}$ and $Y_{2i}$, this expression reduces to eq. (33) in the
+paper. Now,
+\begin{equation*}
+  \hat{\alpha}-\alpha=
+  (Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2})^{-1}
+  Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\cdot
+  \ddot{X}'(Y_{1}-Y_{2}\alpha)
+\end{equation*}
+Suppose that
+\begin{equation*}
+  E[\Xs_{s}\mid \mathcal{F}_{0}]=\Gamma'\Zs_{s},
+\end{equation*}
+where $\mathcal{F}_{0}=(Y_{1}(0),Y_{2}(0),W,\Zs,U,B)$. Let $\delta$ be the
+coefficient on $Z$ in the regression of $Y_{1i}-Y_{2i}'\alpha$ onto $Z_{i}$, and
+let $\epsilon_{i}=Y_{1i}-Y_{2i}'\alpha-Z_{i}'\delta=Y_{1i}(0)-Z_{i}'\delta$.
+Then, as in proof of Proposition 4 in the paper,
+\begin{equation*}
+  \begin{split}
+    r_{N}^{1/2}\ddot{X}'(Y_{1}-Y_{2}\alpha) &
+    =r_{N}^{1/2}\ddot{X}'(Z\delta+\epsilon)
+    =r_{N}^{1/2}\tilde{\Xs}'W'\epsilon+r_{N}^{1/2}\Gamma' U'\epsilon
+    -r_{N}^{1/2}\epsilon' Z(\hat{\Gamma}-\Gamma),\\
+    &=r_{N}^{1/2}\tilde{\Xs}'W'\epsilon+o_{p}(1),
+  \end{split}
+\end{equation*}
+where the second line follows by arguments in that proof. Now, since $\Xs_{s}$
+is independent across $s$ conditional on $\mathcal{F}_{0}$, it follows that
+conditional on $\mathcal{F}_{0}$,
+\begin{equation*}
+  r_{N}^{1/2}\tilde{\Xs}'W'\epsilon
+  =r_{N}^{1/2}\sum_{s}\tilde{\Xs}_{s}R_{s}
+  =\mathcal{N}(0,\sum_{s}R^{2}_{s} E[\tilde{\Xs}_{s}\tilde{\Xs}_{s}'\mid \mathcal{F}_{0}])+o_{p}(1),
+\end{equation*}
+where $R_{s}=\sum_{i}w_{is}\epsilon_{i}$. This leads to variance formula
+\begin{equation*}
+  \begin{split}
+    \widehat{\var}(\hat{\alpha})&=
+    (Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2})^{-1}Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\cdot
+    \sum_{s}\hat{R}^{2}_{s} \widehat{\Xs}_{s}\widehat{\Xs}_{s}' \cdot
+    (\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2}(Y_{2}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2})^{-1}\\
+    &=    (\hat{B}'\ddot{X}'\ddot{X}\hat{B})^{-1}\cdot
+    \sum_{s}\hat{R}^{2}_{s} \hat{B}'\widehat{\Xs}_{s}\widehat{\Xs}_{s}'\hat{B} \cdot
+   (\hat{B}'\ddot{X}'\ddot{X}\hat{B})^{-1},
+  \end{split}
+\end{equation*}
+where $\hat{R}_{s}=\sum_{i}w_{is}\hat{\epsilon}_{i}$,
+$\widehat{\Xs}=(W' W)^{-1}W'\ddot{X}$ as in eq. (36) in the paper, with rows
+$\Xs_{s}'$, and $\hat{B}=(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2}$ is a matrix of
+the first-stage coefficients. Here $\hat{\epsilon}_{i}$ is an estimate of the
+structural residual, such as
+\begin{equation}\label{eq:hat-epsilon}
+\hat{\epsilon}=(I-Z(Z' Z)^{-1}Z')(Y_{1}-Y_{21}'\hat{\alpha})
+\end{equation}
+For standard errors, take square root of the appropriate diagonal element.
+
+The AKM0 version is a little tricky here if $\dim(\alpha)>1$ and we're only
+interested in inference on one element of $\alpha$, say the first: this is
+analogous to issues with using the Anderson-Rubin test in a setting with
+multiple endogenous variables.
+
+If we do not require validity under weak instruments, then the analog of the
+`alternative AKM0' procedure from the preceding subsection uses the estimate
+$(\alpha_{10}, \hat{\alpha}_{-1}(\alpha_{10}))$ in place of $\hat{\alpha}$ in
+(\ref{eq:hat-epsilon}), where $\alpha_{10}$ is the null hypothesized value, and
+\begin{equation*}
+  \hat{\alpha}_{-1}(\alpha_{10})=(Y_{2,-1}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'Y_{2,-1})^{-1}
+  Y_{2,-1}'\ddot{X}(\ddot{X}'\ddot{X})^{-1}\ddot{X}'(Y_{1}-Y_{2,1}\alpha_{10}).
+\end{equation*}
+is the estimate of the remaining elements of $\alpha$ with the null $H_{0}\colon
+\alpha_{1}=\alpha_{10}$ imposed.
 
 
 # References
