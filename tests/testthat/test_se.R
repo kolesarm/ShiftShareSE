@@ -238,6 +238,44 @@ test_that("AKM0 under weak ID", {
     expect_equal(o2[1:5], expect2[1:5])
 })
 
+context("Check dealing with collinearity")
+test_that("Default way of dealing with collinearity works", {
+
+    ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
+          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
+          division"
+    ## Clustered
+    cvar <- floor(ADH$sic/10)
+    ff <- as.formula(paste("d_sh_empl_mfg ~ ",
+                           ctrls, "| shock"))
+    fo <- as.formula(paste("d_sh_empl_mfg ~ ", ctrls))
+    b3 <- reg_ss(fo, W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
+                 sector_cvar=cvar, weights=weights, method="all")
+    b5 <- ivreg_ss(ff, W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
+                   sector_cvar=cvar, weights=weights, method="all")
+    Wnew <- cbind(ADH$W, ADH$W[, 1]+ADH$W[, 2])
+    expect_warning(b3b <- reg_ss(fo, W=Wnew, X=IV, data=ADH$reg,
+                                 region_cvar=statefip, sector_cvar=cvar,
+                                 weights=weights, method="all"))
+    expect_warning(b5b <- ivreg_ss(ff, W=Wnew, X=IV, data=ADH$reg,
+                                   region_cvar=statefip, sector_cvar=cvar,
+                                   weights=weights, method="all"))
+    set.seed(42)
+    shuffle <- sample(seq_len(ncol(Wnew)))
+    expect_warning(b3c <- reg_ss(fo, W=Wnew[, shuffle], X=IV, data=ADH$reg,
+                                 region_cvar=statefip, sector_cvar=cvar,
+                                 weights=weights, method="all"))
+    expect_warning(b5c <- ivreg_ss(ff, W=Wnew[, shuffle], X=IV, data=ADH$reg,
+                                   region_cvar=statefip,
+                                   sector_cvar=cvar[shuffle], weights=weights,
+                                   method="all"))
+    ## b5 and b5b match, but not b5c
+    expect_equal(b5$se, b5b$se)
+    expect_lt(max(abs(b5$se-b5c$se)), 1e-3)
+    expect_equal(b3$se, b3b$se)
+    expect_lt(max(abs(b3$se-b3c$se)), 0.1)
+})
+
 context("Check warnings")
 test_that("Print warning if region_cvar not supplied", {
 
@@ -259,18 +297,6 @@ test_that("Print warning if region_cvar not supplied", {
                           sector_cvar=ADH$reg$statefip))
     ## More sectors than regions
     W0 <- matrix(runif(nrow(ADH$W)*3*ncol(ADH$W)), nrow=nrow(ADH$W))
-    expect_error(reg_ss(d_sh_empl ~ 1, W=W0, X=IV, data=ADH$reg,
+    expect_warning(reg_ss(d_sh_empl ~ 1, W=W0, X=IV, data=ADH$reg,
                           method="akm0", sector_cvar=ADH$reg$statefip))
-
-
-    ## collinear share matrix
-    ctrls <- "t2 + l_shind_manuf_cbp + l_sh_popedu_c +
-          l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource +
-          division"
-    W <- ADH$W
-    W <- cbind(W, W[, 1])
-    expect_error(reg_ss(d_sh_empl ~ 1, W=W, X=IV, data=ADH$reg, method="all"))
-    expect_error(ivreg_ss(d_sh_empl ~ 1 | shock, W=W,
-                          X=IV, data=ADH$reg, method="region_cluster"))
-
 })

@@ -75,6 +75,10 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
                          alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
     mm <- cbind(X, Z)
 
+    r <- drop_collinear(W, sector_cvar)
+    W <- r$W
+    sector_cvar <- r$sector_cvar
+
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
         ddY <- stats::lm.fit(y=y, x=Z)$residuals # \ddot{Y}
@@ -95,9 +99,6 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     p <- r$rank
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
-
-    if (qr(W)$rank < ncol(W))
-        stop("Share matrix is collinear")
 
     if("all" %in% method)
         method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
@@ -128,7 +129,7 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         cR0 <- hX*drop(crossprod(wgt * (ddY-ddX*beta0), W))
         cW <- hX*drop(crossprod(wgt * ddX, W))
         if (!is.null(sector_cvar) & length(sector_cvar) != length(cR))
-            stop("The length of \"sector_cvar\" is different",
+            stop("The length of \"sector_cvar\" is different ",
                  "from the number of sectors.")
 
         if (!is.null(sector_cvar)) {
@@ -205,4 +206,17 @@ print.SSResults <- function(x, digits = getOption("digits"), ...) {
     }
 
     invisible(x)
+}
+
+drop_collinear <- function(W, sector_cvar) {
+    qrW <- qr(W)
+    if (qrW$rank < ncol(W)) {
+        warning("Share matrix is collinear")
+        ## qrW$pivot gives the indices of the permuted columns
+        keep <- qrW$pivot[seq_len(qrW$rank)]
+        W <- W[, keep]
+        if (!is.null(sector_cvar))
+            sector_cvar <- sector_cvar[keep]
+    }
+    list(W=W, sector_cvar=sector_cvar)
 }

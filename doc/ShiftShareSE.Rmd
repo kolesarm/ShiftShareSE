@@ -14,6 +14,8 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
 fontfamily: mathpazo
 bibliography: library.bib
+linkcolor: red
+urlcolor: red
 fontsize: 11pt
 vignette: >
   %\VignetteIndexEntry{ShiftShareSE}
@@ -83,23 +85,74 @@ ivreg_ss(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
                   weights=weights, sector_cvar=sic, method="all")
 ```
 
-# Note on collinear sectors
+# Collinear share matrix
 
-Let $W$ denote the share matrix with the $(i,s)$ element given by $w_{is}$.
-Suppose that columns of $W$ are collinear, so it that it has rank $S_{0}<S$.
-Without loss of generality, suppose that the first $S_0$ columns of the matrix
-are full rank, so that the collinearity is caused by the last $S-S_0$ sectors.
-In this case, it is not possible to recover, $\tilde{\Xs}_s$, the sectoral
-shifters with the controls partialled out, and the `reg_ss` and `ivreg_ss`
-functions will return an error message `"Share matrix is collinear"`. The
-researcher can either (i) drop the collinear sectors, defining
-$X_i=\sum_{s=1}^{S_0}w_{is}\Xs_{s}$, (ii) aggregate the sectors, or (iii) if the
-only controls are those with shift-share structure, and we have data on $\Zs_{s}$,
-we can estimate $\tilde{\Xs}_{s}$ by running a sector-level regression of $\Xs_s$
-onto $\Zs_s$, and taking the residual. This third option is not currently
-implemented in this package. Note that options (i) and (ii) change the
-definition of the estimand. Since they involve changing the shock vector
-$X$, this has to be done before using the `reg_ss` and `ivreg_ss` functions.
+Let $W$ denote the share matrix with the $(i,s)$ element given by $w_{is}$ and
+$s$th column $w_s$. Suppose that columns of $W$ are collinear, so that it has
+rank $S_{0}<S$. Without loss of generality, suppose that the first $S_0$ columns
+of the matrix are full rank, so that the collinearity is caused by the last
+$S-S_0$ sectors. In this case, it is not possible to recover, $\tilde{\Xs}_s$,
+the sectoral shifters with the controls partialled without further assumptions.
+The `reg_ss` and `ivreg_ss` functions will return a warning message `"Share
+matrix is collinear"`. To compute the standard errors, the commands implement a
+default solution to this issue based on aggregating the shocks to the collinear
+sectors, which we describe in Section \ref{default_collinear} below. However,
+there are other ways of dealing with collinearity in the share matrix, as we
+describe in \ref{other_collinear} below. Depending on the the setting,
+researchers may wish to instead use one of these alternatives.
+
+## Default way of dealing with collinear sectors
+\label{default_collinear}
+
+We use a QR factorization of $W$ with column pivoting (see Chapter 5.4.2 in
+@gv13) to drop the collinear columns in $W$. That is, we decompose $W=Q R P'$,
+where $Q$ is an $N\times S$ orthogonal matrix, the matrix $R$ takes the form
+$R=\bigl(\begin{smallmatrix}R_1 &R_2\\0&0\end{smallmatrix}\bigr)$, where $R_1$
+is an $S_0\times S_0$ upper triangular matrix, $R_2$ has dimensions $S_0\times
+(S-S_0)$, and $P$ is a permutation matrix such that the diagonal elements of $R$
+are decreasing. We then drop $S_0-S$ columns of $W$ that correspond to the last
+$S-S_0$ columns of $QR$, as indicated by the permutation matrix, obtaining a new
+share matrix $W_{new}$. Most software implementations of ordinary least squares,
+including [LAPACK](https://www.netlib.org/lapack/lug/node42.html) used by `R`,
+use this algorithm to drop collinear columns of the regressor matrix.
+
+This solution keeps the regional shocks $X_i$ the same, so that the point
+estimates do not change, while implicitly redefining the sectoral shocks
+$\Xs_s$. In particular, by definition of collinearity, each column $w_s$ of $W$
+that we drop can be written as a linear combination of the new share matrix
+$W_{new}$. We can determine the coefficients $\gamma_s$ in this linear combination
+by regressing $w_s$ onto $W_{new}$. Observe that since \begin{equation*}
+X=W\Xs=W_{new}\Xs_{0}+\sum_{s=S_{0}+1}^{S}(W_{0}\gamma_{s})X_{s}
+=W_{new}\left[\Xs_{0}+\sum_{s=S_{0}+1}^{S}\gamma_{s}X_{s}\right]=W_{new}\Xs_{new},
+\end{equation*}
+dropping the collinear columns of $W$ doesn't change the regional shocks $X_i$ if we implicitly define a new sectoral shock vector
+$\Xs_{new}$ as \begin{equation*} \Xs_{new}=\Xs_0+\sum_{s=S_0+1}^S\gamma_s x_s.
+\end{equation*} Here $\Xs_0$ corresponds to the first $S_0$ entries of the
+$S$-vector of shocks $\Xs$.
+
+Note that re-ordering the columns of $W$ will generally result in different
+columns being dropped, so that the standard errors will generally depend on the
+order of the sectors.
+
+## Other solutions
+\label{other_collinear}
+
+There are alternative ways of dealing with collinearity, including:
+
+1. Drop the collinear sectors, defining $X_i=\sum_{s=1}^{S_0}w_{is}\Xs_{s}$, and
+   defining the share matrix $W$ to only have $S_0$ columns, as in the default
+   solution. This effectively puts shocks to the collinear sectors into the
+   residual (which is analogous to letting say the shock to non-manufacturing
+   sectors be part of the residual), and changes the point estimate as well as
+   the estimand.
+2. Aggregate the sectors. For instance, if originally the sectors correspond to
+   4-digit SIC industries, we may wish to work with 3-digit industries. This
+   solution will change the point estimate, as well as the estimand.
+   Alternatively, we may only aggregate the collinear sectors.
+3. If the only controls are those with shift-share structure, and we have data
+   on $\Zs_{s}$, we can estimate $\tilde{\Xs}_{s}$ by running a sector-level
+   regression of $\Xs_s$ onto $\Zs_s$, and taking the residual. This solution
+   doesn't affect the point estimate or the definition of the estimand.
 
 # Extensions to multiple shifters and multiple endogenous variables
 

@@ -2,6 +2,7 @@
  "library"
  (lambda ()
    (LaTeX-add-bibitems
+    "gv13"
     "adh13"
     "akm18"
     "bartik91"

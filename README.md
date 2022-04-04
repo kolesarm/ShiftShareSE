@@ -43,8 +43,9 @@ install.packages("ShiftShareSE")
 ```
 
 Alternatively, you can get the current development version from GitHub:
-
 ``` r
-install.packages("remotes") # if not installed
-remotes::install_github("kolesarm/ShiftShareSE")
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
+}
+remotes::install_github("kolesarm/Robust-Small-Sample-Standard-Errors")
 ```

@@ -88,6 +88,10 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
 
     mm <- cbind(X, Z)
 
+    r <- drop_collinear(W, sector_cvar)
+    W <- r$W
+    sector_cvar <- r$sector_cvar
+
     if (is.null(w)) {
         ddX <- stats::lm.fit(y=X, x=Z)$residuals # \ddot{X}
         ddY1 <- stats::lm.fit(y=y1, x=Z)$residuals # \ddot{Y}_{1}
@@ -110,9 +114,6 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
     resid <- r1$residuals-r2$residuals*betahat
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
-
-    if (qr(W)$rank < ncol(W))
-        stop("Share matrix is collinear")
 
     RX <- sum(wgt * ddY2*ddX)
 
@@ -144,7 +145,7 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
         cW <- hX*drop(crossprod(wgt * ddY2, W))
         if (!is.null(sector_cvar)) {
             if (length(sector_cvar) != length(cR))
-                stop("The length of \"sector_cvar\" is different",
+                stop("The length of \"sector_cvar\" is different ",
                         "from the number of sectors.")
             cR <- tapply(cR, factor(sector_cvar), sum)
             cR0 <- tapply(cR0, factor(sector_cvar), sum)
