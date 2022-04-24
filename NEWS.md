@@ -1,3 +1,10 @@
+# ShiftShareSE 1.1.0
+
+## New Features
+
+- Automatically handle collinear share matrix
+
+
 # ShiftShareSE 1.0.1
 
 ## Minor improvements and fixes

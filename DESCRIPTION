@@ -1,6 +1,6 @@
 Package: ShiftShareSE
 Title: Inference in Regressions with Shift-Share Structure
-Version: 1.0.1.9000
+Version: 1.1.0
 Authors@R: c(person(given = "Michal",
                   family = "Kolesár",
                   role = c("aut", "cre"),
@@ -19,7 +19,7 @@ Description: Provides confidence intervals in least-squares regressions when the
   variables regressions when the instrument has a shift-share structure. The
   confidence intervals implement the AKM and AKM0 methods developed in Adão,
   Kolesár, and Morales (2019) <doi:10.1093/qje/qjz025>.
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.1.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
