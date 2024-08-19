@@ -1,4 +1,4 @@
-[![R-CMD-check](https://github.com/kolesarm/ShiftShareSE/workflows/R-CMD-check/badge.svg)](https://github.com/kolesarm/ShiftShareSE/actions) [![Coverage status](https://codecov.io/gh/kolesarm/ShiftShareSE/branch/master/graph/badge.svg)](https://codecov.io/github/kolesarm/ShiftShareSE?branch=master) [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE)
+[![R-CMD-check](https://github.com/kolesarm/ShiftShareSE/workflows/R-CMD-check/badge.svg)](https://github.com/kolesarm/ShiftShareSE/actions) [![Coverage status](https://codecov.io/gh/kolesarm/ShiftShareSE/branch/master/graph/badge.svg)](https://codecov.io/github/kolesarm/ShiftShareSE?branch=master) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE) [![Download statistics](https://cranlogs.r-pkg.org/badges/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE)
 
 # ShiftShareSE
 
