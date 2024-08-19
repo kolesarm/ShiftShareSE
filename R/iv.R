@@ -83,7 +83,8 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
-ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
+ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, #nolint
+                         method=c("akm", "akm0"),
                          beta0=0, alpha=0.05, region_cvar=NULL,
                          sector_cvar=NULL) {
 

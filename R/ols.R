@@ -72,7 +72,8 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
-reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
+reg_ss.fit <- function(y, X, W, Z, w=NULL, # nolint
+                       method=c("akm", "akm0"), beta0=0,
                        alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
     mm <- cbind(X, Z)
 
@@ -86,7 +87,6 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
         hX <- stats::lm.fit(y=ddX, x=W)$coefficients #  \hat{\Xs}
         wgt <- 1
         r <- stats::lm.fit(mm, y)
-
     } else {
         ddX <- stats::lm.wfit(y=X, x=Z, w=w)$residuals
         ddY <- stats::lm.wfit(y=y, x=Z, w=w)$residuals
@@ -121,7 +121,8 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     } else if ("region_cluster" %in% method) {
         nc <- length(unique(region_cvar))      # # of clusters
         se.s <- sqrt((nc / (nc-1)) * (n-1) / (n-p) *
-                     drop(crossprod(tapply(u, factor(region_cvar), sum)))) / RX
+                         drop(crossprod(tapply(u, factor(region_cvar),
+                                               sum)))) / RX
     }
 
     if ("akm" %in% method || "akm0" %in% method) {

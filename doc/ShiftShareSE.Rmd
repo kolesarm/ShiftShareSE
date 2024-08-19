@@ -54,7 +54,9 @@ We now replicate column (1) of Table V in @akm18. First we load the package,
 define the vector of controls, and define a vector of 3-digit SIC codes:
 ```{r}
 library("ShiftShareSE")
-ctrls <- paste("t2 + l_shind_manuf_cbp + l_sh_popedu_c +", "l_sh_popfborn + l_sh_empl_f + l_sh_routine33 + l_task_outsource", "+ division")
+ctrls <- paste("t2 + l_shind_manuf_cbp + l_sh_popedu_c +",
+               "l_sh_popfborn + l_sh_empl_f + l_sh_routine33",
+               " + l_task_outsource + division")
 sic <- floor(ADH$sic/10)
 ```
 
@@ -66,8 +68,8 @@ options.
 The first-stage regression:
 ```{r}
 reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
-               data=ADH$reg, weights=weights, region_cvar=statefip,
-               sector_cvar=sic, method="all")
+       data=ADH$reg, weights=weights, region_cvar=statefip,
+       sector_cvar=sic, method="all")
 ```
 
 Note that for `"AKM0"`, `"Std. Error"` corresponds to the normalized standard
@@ -78,11 +80,11 @@ $2z_{1-\alpha/2}$.
 The reduced-form and IV regressions:
 ```{r}
 reg_ss(as.formula(paste("d_sh_empl ~", ctrls)), W=ADH$W, X=IV,
-                  data=ADH$reg, region_cvar=statefip, weights=weights,
-                  sector_cvar=sic, method="all")
+       data=ADH$reg, region_cvar=statefip, weights=weights,
+       sector_cvar=sic, method="all")
 ivreg_ss(as.formula(paste("d_sh_empl ~", ctrls, "| shock")), W=ADH$W,
-                  X=IV, data=ADH$reg, region_cvar=statefip,
-                  weights=weights, sector_cvar=sic, method="all")
+         X=IV, data=ADH$reg, region_cvar=statefip,
+         weights=weights, sector_cvar=sic, method="all")
 ```
 
 # Collinear share matrix
