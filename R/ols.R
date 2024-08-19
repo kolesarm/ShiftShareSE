@@ -26,7 +26,7 @@
 #'          method=c("ehw", "akm", "akm0"))
 #' @export
 reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
-                     alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
+                   alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
 
     ## construct model frame
     cl <- mf <- match.call(expand.dots = FALSE)
@@ -44,10 +44,11 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
         stop("'weights' must be a numeric vector")
     mt <- attr(mf, "terms")
 
-    Z <- if (stats::is.empty.model(mt)) NULL
-         else stats::model.matrix(mt, mf, contrasts=NULL)
+    Z <- NULL
+    if (!stats::is.empty.model(mt))
+        Z <- stats::model.matrix(mt, mf, contrasts=NULL)
     ret <- reg_ss.fit(y, mf$"(X)", W, Z, w, method, beta0, alpha, rc,
-                        sector_cvar)
+                      sector_cvar)
 
     ret$call <- cl
     ret$terms <- mt
@@ -72,7 +73,7 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
 #' @export
 reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
-                         alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
+                       alpha=0.05, region_cvar=NULL, sector_cvar=NULL) {
     mm <- cbind(X, Z)
 
     r <- drop_collinear(W, sector_cvar)
@@ -100,35 +101,34 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
 
     se.h <- se.r <- se.s <- se.akm <- se.akm0 <- NA
 
-    if("all" %in% method)
+    if ("all" %in% method)
         method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
 
     RX <- sum(wgt * ddX^2)
 
-    if("homosk" %in% method) {
+    if ("homosk" %in% method) {
         resvar <- sum(wgt * r$residuals^2) / r$df.residual
         se.h <- sqrt(resvar / RX)
     }
 
     u <- wgt * r$residuals * ddX
-    if("ehw" %in% method)
+    if ("ehw" %in% method)
         se.r <- sqrt((n / (n - p)) * drop(crossprod(u))) / RX
 
-    if (("region_cluster" %in% method) & is.null(region_cvar)) {
+    if (("region_cluster" %in% method) && is.null(region_cvar)) {
         warning(paste0("Reporting NA for \"region_cluster\" Std. Error",
                        " because \"region_cvar\" not supplied."))
     } else if ("region_cluster" %in% method) {
         nc <- length(unique(region_cvar))      # # of clusters
-        se.s <-
-            sqrt((nc/(nc-1)) * (n-1)/(n-p) *
-                 drop(crossprod(tapply(u, factor(region_cvar), sum)))) / RX
+        se.s <- sqrt((nc / (nc-1)) * (n-1) / (n-p) *
+                     drop(crossprod(tapply(u, factor(region_cvar), sum)))) / RX
     }
 
-    if ("akm" %in% method | "akm0" %in% method) {
+    if ("akm" %in% method || "akm0" %in% method) {
         cR <- hX*drop(crossprod(wgt * r$residuals, W))
         cR0 <- hX*drop(crossprod(wgt * (ddY-ddX*beta0), W))
         cW <- hX*drop(crossprod(wgt * ddX, W))
-        if (!is.null(sector_cvar) & length(sector_cvar) != length(cR))
+        if (!is.null(sector_cvar) && length(sector_cvar) != length(cR))
             stop("The length of \"sector_cvar\" is different ",
                  "from the number of sectors.")
 
@@ -170,7 +170,7 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, method=c("akm", "akm0"), beta0=0,
     }
 
     se <- c(se.h, se.r, se.s, se.akm, se.akm0)
-    p <- 2*(1-stats::pnorm(abs(betahat-beta0)/c(se[-5], se0.akm0)))
+    p <- 2 * (1-stats::pnorm(abs(betahat-beta0)/c(se[-5], se0.akm0)))
     ci.l <- c(betahat-cv*se[-5], cil.akm0)
     ci.r <- c(betahat+cv*se[-5], cir.akm0)
 

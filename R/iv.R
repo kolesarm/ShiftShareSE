@@ -48,8 +48,9 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 
     mt <- stats::terms(formula, data = data)
     mtZ <- stats::terms(formula, data = data, rhs = 1)
-    Z <- if (stats::is.empty.model(mtZ)) NULL
-         else stats::model.matrix(mtZ, mf, contrasts=NULL)
+    Z <- NULL
+    if (!stats::is.empty.model(mtZ))
+        Z <- stats::model.matrix(mtZ, mf, contrasts=NULL)
 
     mty2 <- stats::delete.response(stats::terms(formula, data = data, rhs = 2))
     attr(mty2, "intercept") <- 0
@@ -117,10 +118,10 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
 
     RX <- sum(wgt * ddY2*ddX)
 
-    if("all" %in% method)
+    if ("all" %in% method)
         method <- c("homosk", "ehw", "region_cluster", "akm", "akm0")
 
-    if("homosk" %in% method) {
+    if ("homosk" %in% method) {
         rss <- sum(wgt * resid^2)
         ## no N/(N-p) small-sample correction in IV
         den <- sum(wgt * ddX^2)
@@ -128,25 +129,25 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
     }
 
     u <- wgt * resid * ddX
-    if("ehw" %in% method)
+    if ("ehw" %in% method)
         se.r <- sqrt(drop(crossprod(u)) / RX^2)
 
-    if("region_cluster" %in% method)
+    if ("region_cluster" %in% method)
         if (is.null(region_cvar))
             warning(paste0("Reporting NA for \"region_cluster\" Std. Error",
                            " because \"region_cvar\" not supplied."))
         else
             se.s <- sqrt(drop(crossprod(tapply(u, factor(region_cvar), sum))) /
-                         RX^2)
+                             RX^2)
 
-    if ("akm" %in% method | "akm0" %in% method) {
+    if ("akm" %in% method || "akm0" %in% method) {
         cR <- hX*drop(crossprod(wgt * resid, W))
         cR0 <- hX*drop(crossprod(wgt * (ddY1-ddY2*beta0), W))
         cW <- hX*drop(crossprod(wgt * ddY2, W))
         if (!is.null(sector_cvar)) {
             if (length(sector_cvar) != length(cR))
                 stop("The length of \"sector_cvar\" is different ",
-                        "from the number of sectors.")
+                     "from the number of sectors.")
             cR <- tapply(cR, factor(sector_cvar), sum)
             cR0 <- tapply(cR0, factor(sector_cvar), sum)
             cW <- tapply(cW, factor(sector_cvar), sum)
@@ -184,7 +185,7 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, method=c("akm", "akm0"),
     }
 
     se <- c(se.h, se.r, se.s, se.akm, se.akm0)
-    p <- 2*(1-stats::pnorm(abs(betahat-beta0)/c(se[-5], se0.akm0)))
+    p <- 2 * (1-stats::pnorm(abs(betahat-beta0)/c(se[-5], se0.akm0)))
     ci.l <- c(betahat-cv*se[-5], cil.akm0)
     ci.r <- c(betahat+cv*se[-5], cir.akm0)
 

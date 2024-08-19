@@ -9,8 +9,8 @@ ctrls <- readxl::read_excel("DataReplication_v2.xlsx", sheet=3)
 
 ## weight matrix and SIC codes
 sic <- readxl::read_excel("DataReplication_v2.xlsx", sheet=5)$sec_vec
-ADH_W <- unname(as.matrix(readxl::read_excel("DataReplication_v2.xlsx",
-                                             sheet=4, col_names=TRUE))[, -1])
+ADHW <- unname(as.matrix(readxl::read_excel("DataReplication_v2.xlsx",
+                                            sheet=4, col_names=TRUE))[, -1])
 
 ## Add some other outcomes
 d1 <- readxl::read_excel("DataADH_check.xlsx", sheet=1)
@@ -32,7 +32,7 @@ ADH1 <- ADH[, c("d_sh_empl", "d_sh_empl_mfg", "d_sh_empl_nmfg",
 names(ADH1)[4:7] <- c("shock", "IV", "weights", "statefip")
 
 ## Combine all into one object
-ADH <- list(reg=ADH1, sic=sic, W=ADH_W)
+ADH <- list(reg=ADH1, sic=sic, W=ADHW)
 
 devtools::use_data(ADH, overwrite=TRUE, internal=FALSE)
 

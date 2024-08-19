@@ -14,11 +14,11 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     r1 <- lm(as.formula(paste("shock ~ IV+", ctrls)), data=ADH$reg,
              weights=weights)
     b1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
-                   data=ADH$reg, weights=weights, region_cvar=statefip,
-                   method=methods)
+                 data=ADH$reg, weights=weights, region_cvar=statefip,
+                 method=methods)
     r2 <- lm(as.formula(paste("shock ~ IV+", ctrls)), data=ADH$reg)
     b2 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
-                   data=ADH$reg, method=methods, region_cvar=statefip)
+                 data=ADH$reg, method=methods, region_cvar=statefip)
 
     expect_equal(unname(summary(r1)$coefficients[2, 1:2]),
                  unname(c(b1$beta, b1$se[1])))
@@ -33,12 +33,12 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     r3 <- lm(as.formula(paste("d_sh_empl_mfg ~ IV+", ctrls)), data=ADH$reg,
              weights=weights)
     b3 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
-                   X=IV, data=ADH$reg, region_cvar=statefip,
-                   weights=weights, method=methods)
+                 X=IV, data=ADH$reg, region_cvar=statefip,
+                 weights=weights, method=methods)
     r4 <- lm(as.formula(paste("d_sh_empl_mfg ~ IV+", ctrls)), data=ADH$reg)
     b4 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
-                   X= IV, data=ADH$reg, region_cvar=statefip,
-                   method=methods)
+                 X= IV, data=ADH$reg, region_cvar=statefip,
+                 method=methods)
 
     expect_equal(unname(summary(r3)$coefficients[2, 1:2]),
                  unname(c(b3$beta, b3$se[1])))
@@ -52,7 +52,7 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     ## IV
     r5 <- AER::ivreg(as.formula(paste("d_sh_empl_mfg ~ shock+",
                                       ctrls, "| IV+", ctrls)),
-                   data=ADH$reg, weights=weights)
+                     data=ADH$reg, weights=weights)
     b5 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method=methods)
@@ -84,27 +84,27 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     ## 3-digit cluster and unclustered
     cvar <- floor(ADH$sic/10)
     c1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
-                   data=ADH$reg, weights=weights, region_cvar=statefip,
-                   sector_cvar=cvar, method="all")
+                 data=ADH$reg, weights=weights, region_cvar=statefip,
+                 sector_cvar=cvar, method="all")
     c3 <- reg_ss(as.formula(paste("d_sh_empl ~ ", ctrls)), W=ADH$W,
-                   X=IV, data=ADH$reg, region_cvar=statefip,
-                   weights=weights, sector_cvar=cvar, method="all")
+                 X=IV, data=ADH$reg, region_cvar=statefip,
+                 weights=weights, sector_cvar=cvar, method="all")
     c5 <- ivreg_ss(as.formula(paste("d_sh_empl ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    sector_cvar=cvar, weights=weights, method="all")
     a1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)), W=ADH$W, X=IV,
-                   data=ADH$reg, weights=weights, region_cvar=statefip,
-                   method="all")
+                 data=ADH$reg, weights=weights, region_cvar=statefip,
+                 method="all")
     ## manufacturing
     b3 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
-                   X=IV, data=ADH$reg, region_cvar=statefip,
-                   sector_cvar=cvar, weights=weights, method="all")
+                 X=IV, data=ADH$reg, region_cvar=statefip,
+                 sector_cvar=cvar, weights=weights, method="all")
     b5 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    sector_cvar=cvar, weights=weights, method="all")
     a3 <- reg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls)), W=ADH$W,
-                   X=IV, data=ADH$reg, region_cvar=statefip,
-                   weights=weights, method="all")
+                 X=IV, data=ADH$reg, region_cvar=statefip,
+                 weights=weights, method="all")
     a5 <- ivreg_ss(as.formula(paste("d_sh_empl_mfg ~ ", ctrls, "| shock")),
                    W=ADH$W, X=IV, data=ADH$reg, region_cvar=statefip,
                    weights=weights, method="all")
@@ -156,7 +156,7 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     n <- 1444
     p <- 17
     nc <- 48
-    ssc <- sqrt((nc/(nc-1)) * (n-1)/(n-p))
+    ssc <- sqrt((nc / (nc-1)) * (n-1) / (n-p))
     ssc2 <- sqrt(n / (n - p))
 
     piv0 <- c(c5$p[4:5], a5$p[4:5]) -
@@ -205,19 +205,19 @@ test_that("AKM0 under weak ID", {
     expect_equal(unname(c(iv2$ci.l[5], iv2$ci.r[5])), c(-Inf, Inf))
 
     r0 <- reg_ss(as.formula(paste("shock ~ ", ctrls)),
-             W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
-             data=ADH$reg, weights=weights, region_cvar=statefip,
-             method="akm0", subset=as.numeric(division)>4, alpha=0.05)
+                 W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
+                 data=ADH$reg, weights=weights, region_cvar=statefip,
+                 method="akm0", subset=as.numeric(division)>4, alpha=0.05)
     expect_lt(r0$ci.l[5], r0$ci.r[5])
     r1 <- reg_ss(as.formula(paste("shock ~ ", ctrls)),
-             W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
-             data=ADH$reg, weights=weights, region_cvar=statefip,
-             method="akm0", subset=as.numeric(division)>4, alpha=0.045)
+                 W=ADH$W[as.numeric(ADH$reg$division)>4, ], X=IV,
+                 data=ADH$reg, weights=weights, region_cvar=statefip,
+                 method="akm0", subset=as.numeric(division)>4, alpha=0.045)
 
     r2 <- reg_ss(as.formula(paste("shock ~ ", ctrls)),
-             W=ADH$W[as.numeric(ADH$reg$division)<6, ], X=IV,
-             data=ADH$reg, weights=weights, region_cvar=statefip,
-             method="akm0", subset=as.numeric(division)<6)
+                 W=ADH$W[as.numeric(ADH$reg$division)<6, ], X=IV,
+                 data=ADH$reg, weights=weights, region_cvar=statefip,
+                 method="akm0", subset=as.numeric(division)<6)
     expect_equal(unname(c(r1$se[5], r2$se[5])), c(Inf, Inf))
     expect_lt(r1$ci.r[5], r1$ci.l[5])
     expect_equal(unname(c(r2$ci.l[5], r2$ci.r[5])), c(-Inf, Inf))
@@ -280,11 +280,11 @@ context("Check warnings")
 test_that("Print warning if region_cvar not supplied", {
 
     expect_warning(reg_ss(d_sh_empl ~ 1, W=ADH$W, X=IV,
-                            data=ADH$reg, method="all"))
+                          data=ADH$reg, method="all"))
     expect_warning(ivreg_ss(d_sh_empl ~ 1 | shock, W=ADH$W,
-                              X=IV, data=ADH$reg, method="all"))
+                            X=IV, data=ADH$reg, method="all"))
     expect_warning(reg_ss(d_sh_empl ~ 1, W=ADH$W, X=IV,
-                            data=ADH$reg, method="region_cluster"))
+                          data=ADH$reg, method="region_cluster"))
     expect_warning(ivreg_ss(d_sh_empl ~ 1 | shock, W=ADH$W,
                             X=IV, data=ADH$reg, method="region_cluster"))
 
