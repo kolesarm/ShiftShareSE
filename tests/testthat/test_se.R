@@ -25,8 +25,8 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     expect_equal(unname(summary(r2)$coefficients[2, 1:2]),
                  unname(c(b2$beta, b2$se[1])))
     ## From stata
-    expect_equal(c(.029158413, .171520974, .181839343, .02732516, .087007189,
-                   .091423724),
+    expect_equal(c(0.029158413, 0.171520974, 0.181839343, 0.02732516,
+                   0.087007189, 0.091423724),
                  unname(c(b2$se[1:3], b1$se[1:3])))
 
     ## Reduced form
@@ -45,8 +45,8 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     expect_equal(unname(summary(r4)$coefficients[2, 1:2]),
                  unname(c(b4$beta, b4$se[1])))
     ## From stata
-    expect_equal(c(.028257944, .048665505, .051901337, .030314902, .050950162,
-                   .040030546),
+    expect_equal(c(0.028257944, 0.048665505, 0.051901337, 0.030314902,
+                   0.050950162, 0.040030546),
                  unname(c(b4$se[1:3], b3$se[1:3])))
 
     ## IV
@@ -66,8 +66,8 @@ test_that("Homoscedastic and EHW standard errors on ADH data", {
     expect_equal(unname(summary(r5)$coefficients[2, 1]), unname(b5$beta))
     expect_equal(unname(summary(r6)$coefficients[2, 1]), unname(b6$beta))
     ## From stata
-    expect_equal(c(.0390714, .090163192, .100470868, .053969004,
-                   .095215853, .098773877),
+    expect_equal(c(0.0390714, 0.090163192, 0.100470868, 0.053969004,
+                   0.095215853, 0.098773877),
                  unname(c(b6$se[1:3], b5$se[1:3])))
 
     ## RF and IV p-values need to match under the null

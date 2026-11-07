@@ -1,3 +1,16 @@
+# ShiftShareSE 1.1.1
+
+## Minor improvements and fixes
+
+- Fix test failures on CRAN's MKL additional-issues check. New tests no longer
+  require exact equality, and allow for numerical rounding error
+- Add examples to `reg_ss.fit` and `ivreg_ss.fit`
+
+## New Features
+
+- Automatically handle collinear share matrix
+
+
 # ShiftShareSE 1.1.0
 
 ## New Features

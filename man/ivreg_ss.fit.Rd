@@ -102,3 +102,10 @@ Basic computing engine to calculate confidence intervals and p-values in an
 instrumental variables regression with a shift-share instrument, using
 different inference methods, as specified by \code{method}.
 }
+\examples{
+## Use ADH data from Autor, Dorn, and Hanson (2013), same as ivreg_ss
+## example: Z is a column of ones, matching the intercept-only formula.
+ivreg_ss.fit(y1 = ADH$reg$d_sh_empl, y2 = ADH$reg$shock, X = ADH$reg$IV,
+             W = ADH$W, Z = matrix(1, nrow = nrow(ADH$reg)),
+             method = c("ehw", "akm", "akm0"))
+}

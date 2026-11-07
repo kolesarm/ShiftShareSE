@@ -9,7 +9,7 @@ This R package implements confidence intervals in shift-share designs (also call
 at [CRAN](https://CRAN.R-project.org/package=ShiftShareSE). See the
 [ShiftShareSEMatlab](https://github.com/kolesarm/ShiftShareSEMatlab) package for
 Matlab version of this code, and the
-[ShiftShareSEStata](https://github.com/zhangxiang0822/ShiftShareSEStata) package
+[ShiftShareSEStata](https://github.com/xiangzhang-econ/ShiftShareSEStata) package
 for a Stata version.
 
 See vignette [ShiftShareSE](doc/ShiftShareSE.pdf) for description of the package

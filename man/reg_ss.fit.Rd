@@ -98,3 +98,10 @@ Basic computing engine to calculate confidence intervals and p-values in
 shift-share designs using different inference methods, as specified by
 \code{method}.
 }
+\examples{
+## Use ADH data from Autor, Dorn, and Hanson (2013); same as the reg_ss()
+## example. Z is a column of ones, matching the intercept-only formula.
+reg_ss.fit(y = ADH$reg$d_sh_empl, X = ADH$reg$IV, W = ADH$W,
+           Z = matrix(1, nrow = nrow(ADH$reg)),
+           method = c("ehw", "akm", "akm0"))
+}

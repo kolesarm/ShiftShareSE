@@ -71,6 +71,7 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' @param w vector of weights (length \code{N}) to be used in the fitting
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
+#' @examples
 #' ## Use ADH data from Autor, Dorn, and Hanson (2013); same as the reg_ss()
 #' ## example. Z is a column of ones, matching the intercept-only formula.
 #' reg_ss.fit(y = ADH$reg$d_sh_empl, X = ADH$reg$IV, W = ADH$W,
