@@ -111,21 +111,27 @@ test_that("AKM and AKM0 standard errors on ADH data", {
     expect_equal(b3$p["AKM0"], b5$p["AKM0"])
     expect_equal(c3$p["AKM0"], c5$p["AKM0"])
     expect_equal(a3$p["AKM0"], a5$p["AKM0"])
-    expect_identical(b3$p[1:3], a3$p[1:3])
-    expect_identical(b5$p[1:3], a5$p[1:3])
+    ## Homoskedastic, EHW and region-clustered inference don't depend on
+    ## sector clustering. The computations are the same, but need not agree
+    ## to the last bit under all BLAS implementations (e.g. Intel MKL), so
+    ## compare up to rounding error rather than exactly.
+    expect_equal(b3$p[1:3], a3$p[1:3])
+    expect_equal(b5$p[1:3], a5$p[1:3])
 
     ## Use Replication package/Paper/Table 5/, and
     ## ShiftShareSEMatlab/ADHapplication.m for non-clustered errors
     est <- c(c1$beta, c3$beta, c5$beta)
     expect_equal(est,
                  c(0.631040938185757, -0.488568717122902, -0.774226658776735))
-    expect_true(c1$beta-a1$beta==0)
+    ## The estimate doesn't depend on sector clustering (agreement up to
+    ## rounding error, as above)
+    expect_equal(c1$beta, a1$beta)
 
     ## p-value CI-l, Cl-r for FS, RF, and IV
 
     ## pvalueFS, CIlFS, CIuFS
-    expect_true(max(abs(c1$p[1:3]-a1$p[1:3]))<=0)
-    expect_true(max(abs(c1$ci.l[1:3]-a1$ci.l[1:3]))<=0)
+    expect_equal(c1$p[1:3], a1$p[1:3])
+    expect_equal(c1$ci.l[1:3], a1$ci.l[1:3])
     pfs0 <- c(c1$p[-1], a1$p[4:5]) -
         c(0.000000000000408, 0.000000000005114, 0, 0.001282890950014, 0,
           0.000056519706974)
