@@ -64,7 +64,6 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 }
 
 
-
 #' Inference in an IV regression with a shift-share instrument
 #'
 #' Basic computing engine to calculate confidence intervals and p-values in an
@@ -82,6 +81,12 @@ ivreg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' @param w vector of weights (length \code{N}) to be used in the fitting
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
+#' @examples
+#' ## Use ADH data from Autor, Dorn, and Hanson (2013), same as ivreg_ss
+#' ## example: Z is a column of ones, matching the intercept-only formula.
+#' ivreg_ss.fit(y1 = ADH$reg$d_sh_empl, y2 = ADH$reg$shock, X = ADH$reg$IV,
+#'              W = ADH$W, Z = matrix(1, nrow = nrow(ADH$reg)),
+#'              method = c("ehw", "akm", "akm0"))
 #' @export
 ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, #nolint
                          method=c("akm", "akm0"),
@@ -135,8 +140,8 @@ ivreg_ss.fit <- function(y1, y2, X, W, Z, w=NULL, #nolint
 
     if ("region_cluster" %in% method)
         if (is.null(region_cvar))
-            warning(paste0("Reporting NA for \"region_cluster\" Std. Error",
-                           " because \"region_cvar\" not supplied."))
+            warning("Reporting NA for \"region_cluster\" Std. Error",
+                    " because \"region_cvar\" not supplied.")
         else
             se.s <- sqrt(drop(crossprod(tapply(u, factor(region_cvar), sum))) /
                              RX^2)

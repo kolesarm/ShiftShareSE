@@ -71,6 +71,11 @@ reg_ss <- function(formula, X, data, W, subset, weights, method, beta0=0,
 #' @param w vector of weights (length \code{N}) to be used in the fitting
 #'     process. If not \code{NULL}, weighted least squares is used with weights
 #'     \code{w}, i.e., \code{sum(w * residuals^2)} is minimized.
+#' ## Use ADH data from Autor, Dorn, and Hanson (2013); same as the reg_ss()
+#' ## example. Z is a column of ones, matching the intercept-only formula.
+#' reg_ss.fit(y = ADH$reg$d_sh_empl, X = ADH$reg$IV, W = ADH$W,
+#'            Z = matrix(1, nrow = nrow(ADH$reg)),
+#'            method = c("ehw", "akm", "akm0"))
 #' @export
 reg_ss.fit <- function(y, X, W, Z, w=NULL, # nolint
                        method=c("akm", "akm0"), beta0=0,
@@ -116,8 +121,8 @@ reg_ss.fit <- function(y, X, W, Z, w=NULL, # nolint
         se.r <- sqrt((n / (n - p)) * drop(crossprod(u))) / RX
 
     if (("region_cluster" %in% method) && is.null(region_cvar)) {
-        warning(paste0("Reporting NA for \"region_cluster\" Std. Error",
-                       " because \"region_cvar\" not supplied."))
+        warning("Reporting NA for \"region_cluster\" Std. Error",
+                " because \"region_cvar\" not supplied.")
     } else if ("region_cluster" %in% method) {
         nc <- length(unique(region_cvar))      # # of clusters
         se.s <- sqrt((nc / (nc-1)) * (n-1) / (n-p) *
@@ -195,10 +200,10 @@ print.SSResults <- function(x, digits = getOption("digits"), ...) {
     r <- cbind("Std. Error"=x$se[s], "p-value"=x$p[s], "Lower CI"=x$ci.l[s],
                "Upper CI"=x$ci.r[s])
     cat("\n\nInference:\n")
-    if (sum(r[, 3]<r[, 4]) > 0)
+    if (any(r[, 3]<r[, 4]))
         print(r[r[, 3]<r[, 4], , drop=FALSE], digits=digits) # nolint
     ## AKM0 in format (-Inf, U) \cup (L, Inf)
-    if (sum(r[, 3]>r[, 4]) > 0) {
+    if (any(r[, 3]>r[, 4])) {
         r2 <- r[r[, 3]>r[, 4], , drop=FALSE] # nolint
         r2 <- data.frame(r2[, 1:2, drop=FALSE],
                          "(-Inf", r2[, 4], "] + [", r2[, 3], "Inf )")

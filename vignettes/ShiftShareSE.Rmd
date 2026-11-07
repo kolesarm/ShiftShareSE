@@ -115,7 +115,7 @@ is an $S_0\times S_0$ upper triangular matrix, $R_2$ has dimensions $S_0\times
 are decreasing. We then drop $S_0-S$ columns of $W$ that correspond to the last
 $S-S_0$ columns of $QR$, as indicated by the permutation matrix, obtaining a new
 share matrix $W_{new}$. Most software implementations of ordinary least squares,
-including [LAPACK](https://www.netlib.org/lapack/lug/node42.html) used by `R`,
+including [LAPACK](https://netlib.org/lapack/lug/node42.html) used by `R`,
 use this algorithm to drop collinear columns of the regressor matrix.
 
 This solution keeps the regional shocks $X_i$ the same, so that the point

@@ -1,9 +1,9 @@
-[![R-CMD-check](https://github.com/kolesarm/ShiftShareSE/workflows/R-CMD-check/badge.svg)](https://github.com/kolesarm/ShiftShareSE/actions) [![Coverage status](https://codecov.io/gh/kolesarm/ShiftShareSE/branch/master/graph/badge.svg)](https://codecov.io/github/kolesarm/ShiftShareSE?branch=master) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE) [![Download statistics](https://cranlogs.r-pkg.org/badges/grand-total/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE)
+[![R-CMD-check](https://github.com/kolesarm/ShiftShareSE/workflows/R-CMD-check/badge.svg)](https://github.com/kolesarm/ShiftShareSE/actions) [![Coverage status](https://codecov.io/gh/kolesarm/ShiftShareSE/branch/master/graph/badge.svg)](https://app.codecov.io/github/kolesarm/ShiftShareSE?branch=master) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE) [![Download statistics](https://cranlogs.r-pkg.org/badges/ShiftShareSE)](https://cran.r-project.org/package=ShiftShareSE)
 
 # ShiftShareSE
 
 This R package implements confidence intervals in shift-share designs (also called
-[Bartik (1991)](http://research.upjohn.org/up_press/77/) designs) using the
+[Bartik (1991)](https://research.upjohn.org/up_press/77/) designs) using the
 `AKM` and `AKM0` procedures from [Adão, Kolesár, and Morales
 (2019)](https://doi.org/10.1093/qje/qjz025). The released version is available
 at [CRAN](https://CRAN.R-project.org/package=ShiftShareSE). See the
