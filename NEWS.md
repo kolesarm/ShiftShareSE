@@ -1,3 +1,5 @@
+# ShiftShareSE (development version)
+
 # ShiftShareSE 1.1.1
 
 ## Minor improvements and fixes
